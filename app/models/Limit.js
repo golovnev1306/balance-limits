@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../../config/db')
+const Deal = require('../models/Deal')
 
 const Limit = sequelize.define('limit', {
 
@@ -29,9 +30,12 @@ const Limit = sequelize.define('limit', {
         allowNull: false,
     },
     summ: {
-        type: DataTypes.FLOAT,
+        type: DataTypes.DOUBLE,
         allowNull: false
     }
 }, {timestamps: false})
+
+Limit.hasMany(Deal, {foreignKey: 'limit_id', onDelete: 'cascade'})
+
 
 module.exports = Limit

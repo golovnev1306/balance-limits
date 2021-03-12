@@ -16,6 +16,8 @@ const start = async () => {
 
         app.use(express.json())
         app.use('/api/limits', routers.limits(express))
+        app.use('/api/deals', routers.deals(express))
+        app.use('/api/bills', routers.bills(express))
 
         app.use(function (req, res) {
             res.status(404).json({message: 'По адресу ничего нет', isSuccess: false})
