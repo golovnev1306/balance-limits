@@ -1,8 +1,7 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../../config/db')
-const Bill = require('./Bill')
 
-const Deal = sequelize.define('Deal', {
+const Payment = sequelize.define('Payment', {
 
     id: {
         type: DataTypes.INTEGER,
@@ -10,28 +9,24 @@ const Deal = sequelize.define('Deal', {
         primaryKey: true
     },
     number: {
-        type: DataTypes.STRING(15)
+        type: DataTypes.STRING(45),
+        allowNull: false
     },
     date: {
         type: DataTypes.DATE,
-        allowNull: false,
-    },
-    product: {
-        type: DataTypes.STRING(45),
         allowNull: false,
     },
     summ: {
         type: DataTypes.DOUBLE,
         allowNull: false,
     },
-    partner: {
-        type: DataTypes.STRING(45),
-        allowNull: false,
-    },
     limit_id: {
         type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    purpose_of_payment: {
+        type: DataTypes.TEXT
     }
-}, {tableName: 'deals', timestamps: false})
+}, {tableName: 'payments', timestamps: false})
 
-
-module.exports = Deal
+module.exports = Payment

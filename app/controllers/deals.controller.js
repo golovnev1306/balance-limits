@@ -1,25 +1,43 @@
-const Deal = require('../models/Deal')
+const {Deal, Limit} = require('../models/index')
 
 module.exports = {
 	getAll: async (req, res) => {
 		const deals = await Deal.findAll({
-			raw: true
+			attributes: ['id', 'number', 'date',
+				'product', 'summ',
+				'partner', 'limit_id',
+				'Limit.kvr', 'Limit.kosgu',
+				'Limit.kvfo', 'Limit.ok'
+			],
+			include: {
+				model: Limit,
+				attributes: []
+			},
+			raw: true,
 		})
-		deals.map(deal => {
-			deal.limit_id =  (deal.limit_id === null) ? (-1) : deal.limit_id
-		})
+
 		res.status(200).json(deals)
 	},
 	add: async (req, res) => {
 		const {...values} = req.body
-		if (!((values.summ instanceof Number||typeof values.summ === 'number') && !isNaN(values.summ))) {
-			values.summ = parseFloat(values.summ.replace(',', '.'))
-		}
-
-		values.limit_id = (values.limit_id === -1) ? null : values.limit_id
 		const createdDeal = await Deal.create({...values})
-		createdDeal.limit_id = createdDeal.limit_id === null ? -1 : createdDeal.limit_id
-		res.status(201).json(createdDeal)
+		const createdDealWithCodes = await Deal.findOne({
+			where: {
+				id: createdDeal.id
+			},
+			attributes: ['id', 'number', 'date',
+				'product', 'summ',
+				'partner', 'limit_id',
+				'Limit.kvr', 'Limit.kosgu',
+				'Limit.kvfo', 'Limit.ok'
+			],
+			include: {
+				model: Limit,
+				attributes: []
+			},
+			raw: true,
+		})
+		res.status(201).json(createdDealWithCodes)
 	},
 	delete: async (req, res) => {
 		const {dealId} = req.query
@@ -33,10 +51,6 @@ module.exports = {
 	},
 	update: async (req, res) => {
 		const {...values} = req.body
-		if (!((values.summ instanceof Number||typeof values.summ === 'number') && !isNaN(values.summ))) {
-			values.summ = parseFloat(values.summ.replace(',', '.'))
-		}
-		values.limit_id = (values.limit_id === -1) ? null : values.limit_id
 		await Deal.update(
 			{...values},
 			{

@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../../config/db')
 
-const Bill = sequelize.define('bill', {
+const Bill = sequelize.define('Bill', {
 
     id: {
         type: DataTypes.INTEGER,
@@ -23,6 +23,6 @@ const Bill = sequelize.define('bill', {
     deal_id: {
         type: DataTypes.INTEGER,
     }
-}, {timestamps: false})
+}, {tableName: 'bills', timestamps: false})
 
 module.exports = Bill
