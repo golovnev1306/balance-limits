@@ -5,71 +5,90 @@ const moment = require('moment')
 
 module.exports = {
     getAll: async (req, res) => {
-        const payments = await Payment.findAll({
-            attributes: [
-                'id', 'purpose_of_payment', 'number', 'date', 'summ', 'limit_id', 'Limit.kvr', 'Limit.kosgu',
-                'Limit.kvfo', 'Limit.ok'
-            ],
-            include: {
-                model: Limit,
-                attributes: [],
-            },
-            raw: true
-        })
-        res.status(200).json(payments)
+        try {
+            const payments = await Payment.findAll({
+                attributes: [
+                    'id', 'purpose_of_payment', 'number', 'date', 'summ', 'limit_id', 'Limit.kvr', 'Limit.kosgu',
+                    'Limit.kvfo', 'Limit.ok'
+                ],
+                include: {
+                    model: Limit,
+                    attributes: [],
+                },
+                raw: true
+            })
+            res.status(200).json(payments)
+        } catch (error) {
+            res.status(400).json(`Ошибка при запросе к бд: \n${error}`)
+        }
     },
 
     add: async (req, res) => {
         const {...values} = req.body
-        const createdPayment = await Payment.create({...values})
-        const createdPaymentWithCodes = await Payment.findOne({
-            where: {
-                id: createdPayment.id
-            },
-            attributes: [
-                'id', 'purpose_of_payment', 'number', 'date', 'summ', 'limit_id', 'Limit.kvr', 'Limit.kosgu',
-                'Limit.kvfo', 'Limit.ok'
-            ],
-            include: {
-                model: Limit,
-                attributes: [],
-            },
-            raw: true,
-        })
+        try {
+            const createdPayment = await Payment.create({...values})
+            const createdPaymentWithCodes = await Payment.findOne({
+                where: {
+                    id: createdPayment.id
+                },
+                attributes: [
+                    'id', 'purpose_of_payment', 'number', 'date', 'summ', 'limit_id', 'Limit.kvr', 'Limit.kosgu',
+                    'Limit.kvfo', 'Limit.ok'
+                ],
+                include: {
+                    model: Limit,
+                    attributes: [],
+                },
+                raw: true,
+            })
 
-        res.status(201).json(createdPaymentWithCodes)
+            res.status(201).json(createdPaymentWithCodes)
+        } catch (error) {
+            res.status(400).json(`Ошибка при запросе к бд: \n${error}`)
+        }
     },
 
     delete: async (req, res) => {
         const {paymentId} = req.query
-        const isDestroyed = await Payment.destroy({
-            where: {
-                id: paymentId
-            }
-        })
+        try {
+            const isDestroyed = await Payment.destroy({
+                where: {
+                    id: paymentId
+                }
+            })
 
-        res.status(200).json(isDestroyed)
+            res.status(200).json(isDestroyed)
+        } catch (error) {
+            res.status(400).json(`Ошибка при запросе к бд: \n${error}`)
+        }
     },
 
     update: async (req, res) => {
         const {...values} = req.body
+        try {
+            await Payment.update(
+                {...values},
+                {
+                    where: {
+                        id: values.id
+                    }
+                })
 
-        await Payment.update(
-            {...values},
-            {
-                where: {
-                    id: values.id
-                }
-            })
-
-        res.status(200).json({isSuccess: true})
+            res.status(200).json({isSuccess: true})
+        } catch (error) {
+            res.status(400).json(`Ошибка при запросе к бд: \n${error}`)
+        }
     },
 
     import: async (req, res) => {
         const {importFile} = req.files
         const {importOverwrite} = req.body
         const workbook = new ExcelJS.Workbook();
-        await workbook.xlsx.load(importFile.data)
+        try {
+            await workbook.xlsx.load(importFile.data)
+        } catch (error) {
+            res.status(400).json(`Ошибка открытия файла, возможно неверный формат: \n${error}`)
+        }
         let sheet = workbook.worksheets[0]
         let columns = {
             number: 'Номер документа',
@@ -87,44 +106,51 @@ module.exports = {
         let excelColumnsKeys = []
         let excelData = []
         let isWriteArray = true
-        sheet.eachRow(async function (row, rowNumber) {
-            if (rowNumber === 6) {
-                let colValues = Object.values(columns)
+        try {
+            sheet.eachRow(async function (row, rowNumber) {
+                if (rowNumber === 6) {
+                    let colValues = Object.values(columns)
 
-                row.eachCell((cell, colNumber) => {
+                    row.eachCell((cell, colNumber) => {
 
-                    if (colValues.includes(cell.value)) {
-                        excelColumns[colNumber] = cell.value
-                        excelColumnsKeys.push(colNumber)
-                    }
-                })
-            }
-
-            if (rowNumber > 6) {
-                if (row.getCell('A').value.trim() === 'Итого:') {
-                    isWriteArray = false
+                        if (colValues.includes(cell.value)) {
+                            excelColumns[colNumber] = cell.value
+                            excelColumnsKeys.push(colNumber)
+                        }
+                    })
                 }
-                let rowData = {}
-                row.eachCell((cell, colNumber) => {
-                    if (excelColumnsKeys.includes(colNumber)) {
-                        rowData[getKeyByValue(columns, excelColumns[colNumber])] = cell.value
+
+                if (rowNumber > 6) {
+                    if (row.getCell('A').value.trim() === 'Итого:') {
+                        isWriteArray = false
                     }
-                })
-                if (isWriteArray) {
-                    excelData.push(rowData)
+                    let rowData = {}
+                    row.eachCell((cell, colNumber) => {
+                        if (excelColumnsKeys.includes(colNumber)) {
+                            rowData[getKeyByValue(columns, excelColumns[colNumber])] = cell.value
+                        }
+                    })
+                    if (isWriteArray) {
+                        excelData.push(rowData)
+                    }
                 }
-            }
-        })
+            })
+        } catch (error) {
+            res.status(400).json(`Во время чтения данных в файле произошла ошибка: \n${error}`)
+        }
 
         excelData = excelData.filter(rowData => {
-
             return rowData.status === 'Обработан' && (rowData.kvr === '244' || rowData.kvr === '247')
         })
 
-        let limits = await Limit.findAll({
-            attributes: ['id', 'kvr', 'kosgu', 'kvfo', 'ok'],
-            raw: true
-        })
+        try {
+            let limits = await Limit.findAll({
+                attributes: ['id', 'kvr', 'kosgu', 'kvfo', 'ok'],
+                raw: true
+            })
+        } catch (error) {
+            res.status(400).json(`Ошибка при запросе к бд: \n${error}`)
+        }
 
         excelData.map(rowData => {
             const limit = limits.find(limit => {
@@ -133,25 +159,29 @@ module.exports = {
                     (limit.kvfo === rowData.kvfo) &&
                     (limit.ok === rowData.ok)
             })
-            try {
-                rowData.limit_id = limit.id
-                rowData.date = moment(rowData.date, "DD.MM.YYYY")
-            } catch (error) {
-                console.log(error)
-            }
+
+            rowData.limit_id = limit.id
+            rowData.date = moment(rowData.date, "DD.MM.YYYY")
         })
 
 
         if (importOverwrite) {
-            await Payment.destroy({
-                where: {},
-                truncate: true
-            })
+            try {
+                await Payment.destroy({
+                    where: {},
+                    truncate: true
+                })
+            } catch (error) {
+                res.status(400).json(`Ошибка при запросе к бд: \n${error}`)
+            }
         }
 
-        console.log(excelData)
-        await Payment.bulkCreate(excelData)
+        try {
+            await Payment.bulkCreate(excelData)
+            res.status(201).json({isSuccess: true})
+        } catch (error) {
+            res.status(400).json(`Ошибка при запросе к бд: \n${error}`)
+        }
 
-        res.status(201).json({isSuccess: true})
     },
 }

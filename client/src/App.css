@@ -1,0 +1,62 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+
+
+.App {
+    text-align: center;
+}
+
+.header {
+    padding: 10px 0;
+    border-bottom: 1px solid #aaa;
+    box-shadow: 0 0 5px #999;
+}
+
+.l-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 10px;
+    text-align: center;
+}
+
+.l-content {
+    margin: 10px 0 40px 0;
+}
+
+.super-app-theme--cell {
+    display: block !important;
+}
+
+.header-menu-item {
+    display: inline !important;
+}
+
+.menu-link {
+    text-decoration: none;
+    color: #6666ff;
+}
+
+.active-menu-link {
+    font-weight: bold;
+    color: #444;
+    cursor: default;
+}
+
+.active-menu-link .header-menu-item {
+    cursor: default;
+}
+
+.loading-wrap {
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    top: 0;
+    left: 0;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}

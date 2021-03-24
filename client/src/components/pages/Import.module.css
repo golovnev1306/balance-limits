@@ -1,0 +1,12 @@
+.import_form {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+.import_file {
+    display: flex;
+    margin: 10px 0;
+    align-items: center;
+    justify-content: center;
+}
