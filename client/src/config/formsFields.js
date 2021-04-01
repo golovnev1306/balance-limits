@@ -44,6 +44,7 @@ const formsFields = {
         { name: 'limit_id', label: 'Лимит', type: 'select', validate: [required()] },
         { name: 'number', autoFocus: true, label: 'Номер', type: 'text', validate: [required(), length({max: 45})] },
         { name: 'purpose_of_payment', label: 'Назначение платежа', type: 'text', multiline: true},
+        {name: 'partner', label: 'Партнер', type: 'text', validate: [required()]},
         { name: 'date', label: 'Дата', type: 'date', InputLabelProps: { shrink: true }, validate: [required()] },
         { name: 'summ', label: 'Сумма', type: 'text', validate: [required()]}
     ]

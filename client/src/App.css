@@ -60,3 +60,19 @@ html, body {
     justify-content: center;
     z-index: 1;
 }
+
+.not-comparing {
+    background-color: #ff99aa;
+}
+
+.comparing {
+    background-color: #99ffaa;
+}
+
+.Mui-selected .not-comparing {
+    background-color: #ffccee;
+}
+
+.Mui-selected .comparing {
+    background-color: #ccffee;
+}

@@ -35,6 +35,7 @@ const columnsExcelExport = {
         { title: 'Номер', width: {wch: 17}},
         { title: 'Дата'},
         { title: 'Назначение платежа', width: {wch: 45}},
+        { title: 'Партнер', width: {wch: 30}},
         { title: 'КВР'},
         { title: 'КОСГУ'},
         { title: 'КВФО'},

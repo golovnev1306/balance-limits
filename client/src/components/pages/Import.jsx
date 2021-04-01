@@ -12,6 +12,13 @@ import {connect} from "react-redux";
 import AttachmentIcon from '@material-ui/icons/Attachment';
 import {required} from "redux-form-validators";
 import Typography from "@material-ui/core/Typography";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import Avatar from "@material-ui/core/Avatar";
+import FolderIcon from '@material-ui/icons/Folder'
+import ListItemText from "@material-ui/core/ListItemText";
+import WarningIcon from '@material-ui/icons/Warning'
 
 const Import = ({handleSubmit, importPayments, reset, invalid}) => {
 
@@ -25,10 +32,44 @@ const Import = ({handleSubmit, importPayments, reset, invalid}) => {
         <form onSubmit={handleSubmit(submit)} className={styles.import_form}>
             <div><h3>Импорт оплаты</h3></div>
             <FormControl>
-                <Field type={'file'} component={FileInput} name={'importFile'} validate={[required({msg: 'Нет файла'})]}/>
+                <List dense={true}>
+                    <ListItem>
+                        <ListItemAvatar>
+                            <Avatar>
+                                <WarningIcon/>
+                            </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText><Typography color={'primary'}> Файл должен быть формата
+                            <b> .xlsx</b></Typography></ListItemText>
+                    </ListItem>
+                    <ListItem>
+                        <ListItemAvatar>
+                            <Avatar>
+                                <WarningIcon/>
+                            </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText> <Typography color={'primary'}> Строка с названиями колонок должна быть под
+                            номером <b>6</b><br/>(Как при выгрузке с АЦК Финансы)</Typography></ListItemText>
+                    </ListItem>
+                    <ListItem>
+                        <ListItemAvatar>
+                            <Avatar>
+                                <WarningIcon/>
+                            </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText><Typography color={'primary'}> Необходимые поля: <b>'Номер документа'</b>, <b>'Дата
+                            документа'</b>,<br/> <b>'Статус документа'</b>, <b>'Сумма'</b>, <b>'Назначение
+                            платежа'</b>, <b>'КВР'</b>, <b>'КОСГУ'</b>, <b>'КВФО'</b>, <b>'Отраслевой
+                            код'</b></Typography></ListItemText>
+                    </ListItem>
+                </List>
+
+
+                <Field type={'file'} component={FileInput} name={'importFile'}
+                       validate={[required({msg: 'Нет файла'})]}/>
             </FormControl>
             <FormControl>
-                <Field component={CheckboxInput} name={'importOverwrite'}/>
+                <Field component={CheckboxInput} label={'Перезаписать'} name={'importOverwrite'}/>
             </FormControl>
             <FormControl>
                 <div style={{marginTop: '25px'}}>
@@ -72,7 +113,7 @@ const FileInput = ({input, meta, ...rest}) => {
     )
 }
 
-const CheckboxInput = ({input}) => {
+const CheckboxInput = ({input, label}) => {
 
     return (
         <FormControlLabel
@@ -83,7 +124,7 @@ const CheckboxInput = ({input}) => {
                     color="primary"
                 />
             }
-            label="Перезаписать"
+            label={label}
         />
     )
 }
@@ -95,5 +136,8 @@ const mapDispatchToProps = dispatch => {
 }
 
 export default compose(reduxForm({
-    form: 'import'
+    form: 'import',
+    initialValues: {
+        withBind: true
+    }
 }), connect(null, mapDispatchToProps))(Import)

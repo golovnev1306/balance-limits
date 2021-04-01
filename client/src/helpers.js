@@ -1,6 +1,8 @@
 import columnsVariants from "./config/columnVariants"
 import columnsExcelExport from "./config/columnsExcelExport"
 import moment from "moment"
+import {createSelector} from "reselect";
+import {getBills, getPayments} from "./selectors";
 
 export const TYPE_MESSAGE_SUCCESS = 'success'
 export const TYPE_MESSAGE_ERROR = 'error'
@@ -80,6 +82,60 @@ export const createJsFormData = values => {
     return formData
 }
 
-export const formatNumber = (value) => {
+export const formatNumber = value => {
     return new Intl.NumberFormat('ru-RU', {minimumFractionDigits: 2}).format(value.toFixed(2))
+}
+
+export const getComparingObject = (obj, fields) => {
+    let resultObj = {}
+
+    fields.map(field => {
+        resultObj[field] = obj?.[field]
+    })
+
+    return resultObj
+}
+
+export const getComparedData = (convertibleArray, comparableArray) => {
+    const availableComparableArray = [...comparableArray]
+    const comparingFields = ['ok', 'kosgu', 'kvfo', 'kvr', 'summ']
+    let resultConvertibleArray = [...convertibleArray]
+    resultConvertibleArray.map(convertibleItem => {
+        const comparingItem = getComparingObject(convertibleItem, comparingFields)
+
+        const foundIndex = availableComparableArray.findIndex(comparableItem => {
+            const comparingComparableItem = getComparingObject(comparableItem, comparingFields)
+            return JSON.stringify(comparingItem) === JSON.stringify(comparingComparableItem)
+        })
+
+        let found = {}
+
+        if (foundIndex !== -1) {
+            found = Object.assign({}, availableComparableArray[foundIndex])
+            delete availableComparableArray[foundIndex]
+        }
+
+        return Object.assign(convertibleItem, {found})
+    })
+
+    const availableComparableById = {}
+
+    resultConvertibleArray.map(convertibleItem => {
+        const comparingItem = getComparingObject(convertibleItem, ['ok', 'kosgu', 'kvfo', 'kvr'])
+        availableComparableArray.map(comparableItem => {
+            const comparingComparableItem = getComparingObject(comparableItem, ['ok', 'kosgu', 'kvfo', 'kvr'])
+            if (JSON.stringify(comparingItem) === JSON.stringify(comparingComparableItem)) {
+                if (!availableComparableById[convertibleItem.id]) {
+                    availableComparableById[convertibleItem.id] = []
+                }
+                availableComparableById[convertibleItem.id].push(comparableItem)
+            }
+        })
+    })
+
+    resultConvertibleArray.map(convertibleItem => {
+        return Object.assign(convertibleItem, {available: availableComparableById[convertibleItem.id]})
+    })
+
+    return resultConvertibleArray
 }

@@ -57,7 +57,7 @@ const App = ({initApp, isInitialized, limits, deals, bills, message, closeMessag
                             <Route exact path="/">
                                 <Main/>
                             </Route>
-                            <Route path="/">
+                            <Route>
                                 Страница не найдена (404)
                             </Route>
                         </Switch>

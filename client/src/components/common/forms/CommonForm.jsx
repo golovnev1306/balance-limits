@@ -8,8 +8,9 @@ import React from "react";
 const CommonForm = ({mode, handleSubmit, addItem, updateItem, handleClose, pristine, formsFields, itemsForSelectorField, partners, allowNullParent}) => {
 
     const submit = (values) => {
-        switch(mode) {
-            case 'add': case 'copy':
+        switch (mode) {
+            case 'add':
+            case 'copy':
                 addItem(values)
                 break
             case 'update':
@@ -75,7 +76,7 @@ const CommonForm = ({mode, handleSubmit, addItem, updateItem, handleClose, prist
                 size="large"
                 type={'submit'}
                 startIcon={<SaveIcon/>}
-                disabled={(pristine && mode!=='copy')}
+                disabled={(pristine && mode !== 'copy')}
             >
                 Сохранить
             </Button>

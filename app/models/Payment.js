@@ -26,7 +26,11 @@ const Payment = sequelize.define('Payment', {
     },
     purpose_of_payment: {
         type: DataTypes.TEXT
-    }
+    },
+    partner: {
+        type: DataTypes.TEXT,
+        allowNull: false
+    },
 }, {tableName: 'payments', timestamps: false})
 
 module.exports = Payment

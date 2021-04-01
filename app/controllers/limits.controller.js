@@ -10,7 +10,7 @@ module.exports = {
             })
             res.status(200).json(limits)
         } catch (error) {
-            res.status(400).json(`Ошибка при запросе к бд: \n${error}`)
+            res.status(400).json({messageBody: `Ошибка при запросе к бд: \n${error}`})
         }
     },
     add: async (req, res) => {
@@ -20,7 +20,7 @@ module.exports = {
 
             res.status(201).json(createdLimit)
         } catch (error) {
-            res.status(400).json(`Ошибка при запросе к бд: \n${error}`)
+            res.status(400).json({messageBody: `Ошибка при запросе к бд: \n${error}`})
         }
     },
     delete: async (req, res) => {
@@ -34,7 +34,7 @@ module.exports = {
             res.status(200).json(isDestroyed)
 
         } catch (error) {
-            res.status(400).json(`Ошибка при запросе к бд: \n${error}`)
+            res.status(400).json({messageBody: `Ошибка при запросе к бд: \n${error}`})
         }
     },
     update: async (req, res) => {
@@ -50,7 +50,7 @@ module.exports = {
 
             res.status(200).json({isSuccess: true})
         } catch (error) {
-            res.status(400).json(`Ошибка при запросе к бд: \n${error}`)
+            res.status(400).json({messageBody: `Ошибка при запросе к бд: \n${error}`})
         }
     }
 }

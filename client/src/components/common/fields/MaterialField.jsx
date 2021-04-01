@@ -58,7 +58,6 @@ const MaterialField = ({input, meta, itemsForSelectField, partners, allowNullPar
                     }}
                     freeSolo={true}
                     renderInput={(params) => {
-                        console.log(params)
                         return <TextField {...params} value={input.value} onChange={input.onChange} {...rest}
                                           error={meta.touched && meta.invalid}
                                           helperText={meta.touched && meta.invalid ? meta.error : ''}

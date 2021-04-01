@@ -1,5 +1,5 @@
 import {DataGrid} from "@material-ui/data-grid"
-import React, {useEffect, useState} from "react"
+import React, {useEffect, useMemo, useState} from "react"
 import columnVariants from "../../config/columnVariants"
 import Tooltip from "@material-ui/core/Tooltip"
 import TransitionsModal from "./TransitionsModal"
@@ -11,9 +11,10 @@ import {formatNumber} from "../../helpers"
 import {getPageSizes} from "../../selectors"
 import {connect} from "react-redux"
 import {setPageSizes} from "../../redux/app-reducer"
+import clsx from 'clsx'
 
 
-const renderCell = (params) => {
+const renderCell = params => {
     let value
     switch (params.colDef.type) {
         case 'date':
@@ -36,16 +37,33 @@ const renderCell = (params) => {
 
 const CommonTable = ({
                          title, selectedItem, setSelectedItem, tableName, data, ChildComponent, modalTitlePostfix,
-                         handleDelete, ChildrenForm, resetPage, setResetPage, pageSizes, setPageSize
+                         handleDelete, ChildrenForm, resetPage, setResetPage, pageSizes, setPageSize,
+                         isCompareMode
                      }) => {
-    const columns = columnVariants[tableName]
-    columns.map(column => (column.renderCell = renderCell))
+
+    const memoizedColumns = useMemo(() => {
+        const columns = columnVariants[tableName]
+        columns.map(column => {
+            column.renderCell = renderCell
+            if (isCompareMode) {
+                column.cellClassName = ({row}) => {
+                    return Object.keys(row.found).length === 0 ? 'not-comparing' : 'comparing'
+                }
+            } else {
+                delete column.cellClassName
+            }
+        })
+        return [...columns]
+    }, [isCompareMode])
+
+
+
 
     const [sum, setSum] = useState({})
 
     // костылек, предупреждающий о том, что итоги могут не соответствовать действительности,
-    // в случае, если стоит фильтрация и происходит изменение данных в этой таблицы,
-    // требует доработки (необходимо разобраться в api фильтров material ui)
+    // в случае, если стоит фильтрация и происходит изменение данных в этой таблицы.
+    // Требует доработки (необходимо разобраться в api фильтров material ui)
     // по-хорошему, нужно пилить свою фильтрацию
     const [isFiltering, setIsFiltering] = useState(false)
     const [isActual, setIsActual] = useState(true)
@@ -153,7 +171,7 @@ const CommonTable = ({
                 rowHeight={35}
                 headerHeight={50}
                 hideFooterSelectedRowCount
-                columns={columns}
+                columns={memoizedColumns}
                 rows={data}
                 localeText={localizationDataGrid}
                 showCellRightBorder

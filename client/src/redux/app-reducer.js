@@ -62,12 +62,12 @@ const appReducer = (state = initialState, action) => {
         case SET_SELECTED_BILL:
             return {
                 ...state,
-                selectedBill: action.selectedBill
+                selectedBill: action.selectedBill,
             }
         case SET_SELECTED_PAYMENT:
             return {
                 ...state,
-                selectedPayment: action.selectedPayment
+                selectedPayment: action.selectedPayment,
             }
 
         case SET_MESSAGE:

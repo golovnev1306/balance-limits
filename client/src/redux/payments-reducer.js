@@ -41,11 +41,16 @@ export const addPayment = payment => ({type: ADD_PAYMENT, payment})
 
 export const setPaymentsThunk = () => {
     return async (dispatch) => {
-        const result = await paymentsApi.get()
-        if (result.status === 200) {
-            const payments = result.data
-            dispatch(setPayments(payments))
+        try {
+            const result = await paymentsApi.get()
+            if (result.status === 200) {
+                const payments = result.data
+                dispatch(setPayments(payments))
+            }
+        } catch (e) {
+            console.log(e.response.data)
         }
+
 
     }
 }

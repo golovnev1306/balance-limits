@@ -36,10 +36,16 @@ export const addBill = bill => ({type: ADD_BILL, bill})
 
 export const setBillsThunk = () => {
     return async (dispatch) => {
-        const result = await billsApi.getBills()
-        if (result.status === 200) {
-            const bills = result.data
-            dispatch(setBills(bills))
+        try {
+            const result = await billsApi.getBills()
+
+            if (result.status === 200) {
+                const bills = result.data
+                console.log(bills)
+                dispatch(setBills(bills))
+            }
+        } catch (e) {
+            console.log(e.response.data)
         }
 
     }

@@ -8,19 +8,19 @@ module.exports = {
                     'id', 'number', 'date', 'summ', 'deal_id', 'Deal.Limit.kvr', 'Deal.Limit.kosgu',
                     'Deal.Limit.kvfo', 'Deal.Limit.ok', 'Deal.partner'
                 ],
-                include: {
+                include: [{
                     model: Deal,
                     attributes: [],
                     include: {
                         model: Limit,
                         attributes: [],
                     }
-                },
+                }],
                 raw: true
             })
             res.status(200).json(bills)
         } catch (error) {
-            res.status(400).json(`Ошибка при запросе к бд: \n${error}`)
+            res.status(400).json({messageBody: `Ошибка при запросе к бд: \n${error}`})
         }
 
     },
@@ -64,7 +64,7 @@ module.exports = {
             })
             res.status(201).json(createdBillWithCodes)
         } catch (error) {
-            res.status(400).json(`Ошибка при запросе к бд: \n${error}`)
+            res.status(400).json({messageBody: `Ошибка при запросе к бд: \n${error}`})
         }
     },
 
@@ -78,7 +78,7 @@ module.exports = {
             })
             res.status(200).json(isDestroyed)
         } catch (error) {
-            res.status(400).json(`Ошибка при запросе к бд: \n${error}`)
+            res.status(400).json({messageBody: `Ошибка при запросе к бд: \n${error}`})
         }
 
     },
@@ -96,7 +96,7 @@ module.exports = {
 
             res.status(200).json({isSuccess: true})
         } catch (error) {
-            res.status(400).json(`Ошибка при запросе к бд: \n${error}`)
+            res.status(400).json({messageBody: `Ошибка при запросе к бд: \n${error}`})
         }
     }
 }
