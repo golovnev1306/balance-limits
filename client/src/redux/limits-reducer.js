@@ -1,6 +1,8 @@
 import limitsApi from '../api/limitsApi'
-import {setMessage, setSelectedBill, setSelectedDeal, setSelectedLimit} from "./app-reducer";
-import {formatOutputData, MESSAGE_ERROR_UNIVERSAL, TYPE_MESSAGE_ERROR} from "../helpers";
+import {setMessage, setSelectedBill, setSelectedDeal, setSelectedLimit} from "./app-reducer"
+import {formatOutputData} from "../helpers"
+import {MESSAGE_ERROR_UNIVERSAL, TYPE_MESSAGE_ERROR} from "../constants"
+
 
 const SET_LIMITS = 'SET_LIMITS'
 const ADD_LIMIT = 'ADD_LIMIT'
@@ -29,10 +31,14 @@ const addLimit = limit => ({type: ADD_LIMIT, limit})
 
 export const setLimitsThunk = () => {
     return async (dispatch) => {
-        const result = await limitsApi.getAll()
-        if (result.status === 200) {
-            const limits = result.data
-            dispatch(setLimits(limits))
+        try {
+            const result = await limitsApi.getAll()
+            if (result.status === 200) {
+                const limits = result.data
+                dispatch(setLimits(limits))
+            }
+        } catch (er) {
+            dispatch(setMessage(er?.response?.data?.messageBody ? er.response.data.messageBody : MESSAGE_ERROR_UNIVERSAL, TYPE_MESSAGE_ERROR))
         }
     }
 }

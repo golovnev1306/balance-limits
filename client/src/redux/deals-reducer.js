@@ -1,7 +1,8 @@
 import dealsApi from '../api/dealsApi'
 import {setMessage, setSelectedBill, setSelectedDeal} from "./app-reducer";
 import moment from "moment"
-import {formatInputData, formatOutputData, MESSAGE_ERROR_UNIVERSAL, TYPE_MESSAGE_ERROR} from "../helpers";
+import {formatInputData, formatOutputData} from "../helpers";
+import {MESSAGE_ERROR_UNIVERSAL, TYPE_MESSAGE_ERROR} from "../constants";
 import {addPartner, setPartners} from "./partners-reducer";
 
 const SET_DIALS = 'SET_DIALS'
@@ -35,16 +36,20 @@ export const addDeal = deal => ({type: ADD_DIAL, deal})
 
 export const setDealsThunk = () => {
     return async (dispatch) => {
-        const result = await dealsApi.getDeals()
-        if (result.status === 200) {
-            let partners = []
-            const deals = result.data
-            deals.map((deal, index) => {
-                partners.push(deal.partner)
-                deals[index] = formatInputData(deal, ['limit_id'])
-            })
-            dispatch(setPartners(partners))
-            dispatch(setDials(deals))
+        try {
+            const result = await dealsApi.getDeals()
+            if (result.status === 200) {
+                let partners = []
+                const deals = result.data
+                deals.map((deal, index) => {
+                    partners.push(deal.partner)
+                    deals[index] = formatInputData(deal, ['limit_id'])
+                })
+                dispatch(setPartners(partners))
+                dispatch(setDials(deals))
+            }
+        } catch (er) {
+            dispatch(setMessage(er?.response?.data?.messageBody ? er.response.data.messageBody : MESSAGE_ERROR_UNIVERSAL, TYPE_MESSAGE_ERROR))
         }
 
     }

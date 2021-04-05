@@ -1,12 +1,6 @@
 import columnsVariants from "./config/columnVariants"
 import columnsExcelExport from "./config/columnsExcelExport"
 import moment from "moment"
-import {createSelector} from "reselect";
-import {getBills, getPayments} from "./selectors";
-
-export const TYPE_MESSAGE_SUCCESS = 'success'
-export const TYPE_MESSAGE_ERROR = 'error'
-export const MESSAGE_ERROR_UNIVERSAL = 'Что-то пошло не так'
 
 export const formatOutputData = values => {
     return {

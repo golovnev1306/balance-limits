@@ -3,10 +3,9 @@ import {setMessage, setSelectedPayment} from "./app-reducer"
 import {
     createJsFormData,
     formatInputData,
-    formatOutputData,
-    MESSAGE_ERROR_UNIVERSAL,
-    TYPE_MESSAGE_ERROR
+    formatOutputData
 } from "../helpers"
+import {MESSAGE_ERROR_UNIVERSAL, TYPE_MESSAGE_ERROR} from "../constants"
 
 const ADD_PAYMENT = 'ADD_PAYMENT'
 const SET_PAYMENTS = 'SET_PAYMENTS'
@@ -47,8 +46,8 @@ export const setPaymentsThunk = () => {
                 const payments = result.data
                 dispatch(setPayments(payments))
             }
-        } catch (e) {
-            console.log(e.response.data)
+        } catch (er) {
+            dispatch(setMessage(er?.response?.data?.messageBody ? er.response.data.messageBody : MESSAGE_ERROR_UNIVERSAL, TYPE_MESSAGE_ERROR))
         }
 
 

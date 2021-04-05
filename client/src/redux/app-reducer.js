@@ -2,7 +2,7 @@ import {setLimitsThunk} from "./limits-reducer"
 import {setDealsThunk} from "./deals-reducer"
 import {setBillsThunk} from "./bills-reducer"
 import {setPaymentsThunk} from "./payments-reducer";
-import {TYPE_MESSAGE_SUCCESS} from "../helpers";
+import {TYPE_MESSAGE_SUCCESS} from "../constants"
 
 
 const SET_INITIAL_APP = 'SET_INITIAL_APP'
@@ -75,7 +75,7 @@ const appReducer = (state = initialState, action) => {
                 ...state,
                 message: {
                     body: action.messageBody,
-                    type: action.messageType,
+                    type: action.messageType ? action.messageType : state.message.type,
                 }
             }
 
@@ -113,7 +113,7 @@ export const clearAllSelected = () => ({type: CLEAR_ALL_SELECTED})
 
 export const setPageSizes = pageSizeObj => ({type: SET_PAGE_SIZES, pageSizeObj})
 
-export const setMessage = (messageBody, messageType = TYPE_MESSAGE_SUCCESS) => ({
+export const setMessage = (messageBody, messageType) => ({
     messageBody,
     messageType,
     type: SET_MESSAGE

@@ -1,7 +1,8 @@
-import billsApi from "../api/billsApi";
-import {setMessage, setSelectedBill} from "./app-reducer";
-import moment from "moment";
-import {formatInputData, formatOutputData, MESSAGE_ERROR_UNIVERSAL, TYPE_MESSAGE_ERROR} from "../helpers";
+import billsApi from "../api/billsApi"
+import {setMessage, setSelectedBill} from "./app-reducer"
+import {formatInputData, formatOutputData} from "../helpers"
+import {MESSAGE_ERROR_UNIVERSAL, TYPE_MESSAGE_ERROR} from "../constants"
+
 
 const ADD_BILL = 'ADD_BILL'
 const SET_BILLS = 'SET_BILLS'
@@ -41,11 +42,10 @@ export const setBillsThunk = () => {
 
             if (result.status === 200) {
                 const bills = result.data
-                console.log(bills)
                 dispatch(setBills(bills))
             }
-        } catch (e) {
-            console.log(e.response.data)
+        } catch (er) {
+            dispatch(setMessage(er?.response?.data?.messageBody ? er.response.data.messageBody : MESSAGE_ERROR_UNIVERSAL, TYPE_MESSAGE_ERROR))
         }
 
     }

@@ -1,4 +1,4 @@
-import React, {Suspense, useEffect} from 'react'
+import React, {Fragment, Suspense, useEffect} from 'react'
 import {connect} from 'react-redux'
 import './App.css'
 import Header from "./Header"
@@ -29,7 +29,7 @@ const App = ({initApp, isInitialized, limits, deals, bills, message, closeMessag
 
     if (isInitialized) {
         return (
-            <>
+            <Fragment>
                 <Header/>
                 <div className='l-container'>
                     <div className="l-content">
@@ -47,7 +47,7 @@ const App = ({initApp, isInitialized, limits, deals, bills, message, closeMessag
                                 <AllPayments/>
                             </Route>
                             <Route exact path="/export">
-                                <Suspense fallback={<Loading />}>
+                                <Suspense fallback={<Loading/>}>
                                     <ExportCss/>
                                 </Suspense>
                             </Route>
@@ -68,10 +68,12 @@ const App = ({initApp, isInitialized, limits, deals, bills, message, closeMessag
                         {message.body}
                     </Alert>
                 </Snackbar>
-            </>)
+            </Fragment>)
     }
     return (
-        <Loading />
+
+        <Loading/>
+
     )
 
 }

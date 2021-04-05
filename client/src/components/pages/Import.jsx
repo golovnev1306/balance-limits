@@ -58,8 +58,8 @@ const Import = ({handleSubmit, importPayments, reset, invalid}) => {
                             </Avatar>
                         </ListItemAvatar>
                         <ListItemText><Typography color={'primary'}> Необходимые поля: <b>'Номер документа'</b>, <b>'Дата
-                            документа'</b>,<br/> <b>'Статус документа'</b>, <b>'Сумма'</b>, <b>'Назначение
-                            платежа'</b>, <b>'КВР'</b>, <b>'КОСГУ'</b>, <b>'КВФО'</b>, <b>'Отраслевой
+                            документа'</b>, <b>'Статус документа'</b>,<br/> <b>'Сумма'</b>, <b>'Назначение
+                            платежа'</b>, <b>Наименование получателя</b>, <b>'КВР'</b>, <b>'КОСГУ'</b>, <b>'КВФО'</b>, <b>'Отраслевой
                             код'</b></Typography></ListItemText>
                     </ListItem>
                 </List>

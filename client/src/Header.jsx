@@ -21,12 +21,12 @@ const Header = ({clearAllSelected}) => {
                 <NavLink onClick={clickHandler} to={'/free-deals'} className={'menu-link'}
                          activeClassName={'active-menu-link'}>
                     <MenuItem className={'header-menu-item'}>
-                        Свободные договора
+                        Свободные договоры
                     </MenuItem></NavLink>
                 <NavLink onClick={clickHandler} to={'/all-deals'} className={'menu-link'}
                          activeClassName={'active-menu-link'}>
                     <MenuItem className={'header-menu-item'}>
-                        Все договора
+                        Все договоры
                     </MenuItem>
                 </NavLink>
                 <NavLink onClick={clickHandler} to={'/all-bills'} className={'menu-link'}
