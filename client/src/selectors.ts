@@ -17,16 +17,6 @@ export const getPartners = (state: StateType) => state.partners.partners
 export const getMessage = (state: StateType) => state.app.message
 export const getPageSizes = (state: StateType) => state.app.pageSizes
 
-export const getLimitsWithBalances = createSelector(getLimits, getDeals, getPayments,  (limits, deals, payments) => {
-    const countedBalanceByDeals: number[] = countBalances(limits, deals, 'limit')
-    const countedBalanceByPayments: number[] = countBalances(limits, payments, 'limit')
-
-    return limits.map(limit => {
-        return Object.assign(limit, {
-            balance: countedBalanceByDeals[limit.id],
-            balanceByPayments: countedBalanceByPayments[limit.id]
-        })})
-})
 
 export const getDealsWithBalances = createSelector(getDeals, getBills, (deals, bills) => {
     const countedBalanceByBills: any = countBalances(deals, bills, 'deal')
@@ -37,8 +27,29 @@ export const getFreeDeals = createSelector(getDealsWithBalances, deals => {
     return deals.filter(deal => deal.limit_id === -1)
 })
 
+export const getOnlyBids = createSelector(getDealsWithBalances, deals => {
+    return deals.filter(deal => deal.is_bid)
+})
+
+export const getOnlyDeals = createSelector(getDealsWithBalances, deals => {
+    return deals.filter(deal => !deal.is_bid)
+})
+
 export const getDealsByLimit = createSelector(getDealsWithBalances, getSelectedLimitId, (deals, limitId) => {
     return deals.filter(deal => deal.limit_id === limitId)
+})
+
+export const getLimitsWithBalances = createSelector(getLimits, getOnlyDeals, getDeals, getPayments,  (limits, deals, dealsWithBids, payments) => {
+    const countedBalanceByDeals: number[] = countBalances(limits, deals, 'limit')
+    const countedBalanceByDealsWithBids: number[] = countBalances(limits, dealsWithBids, 'limit')
+    const countedBalanceByPayments: number[] = countBalances(limits, payments, 'limit')
+
+    return limits.map(limit => {
+        return Object.assign(limit, {
+            balance: countedBalanceByDeals[limit.id],
+            balanceByBids: countedBalanceByDealsWithBids[limit.id],
+            balanceByPayments: countedBalanceByPayments[limit.id]
+        })})
 })
 
 export const getPaymentsByLimit = createSelector(getPayments, getSelectedLimitId, (payments, limitId) => {

@@ -22,6 +22,7 @@ export type DealType = Readonly<{
     summ: number
     partner: string
     limit_id: number
+    is_bid: boolean
     kosgu: string
     kvfo: string
     kvr: string

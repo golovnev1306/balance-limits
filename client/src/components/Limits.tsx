@@ -49,7 +49,6 @@ const Limits: FC<MapStatePropsType & MapDispatchPropsType> = ({limitsResult, del
     }, [limitsResult])
 
     const handleChangeTab = (event: any, newValue: any) => {
-        console.log('event', event)
         setSelectedTab(newValue)
     }
 

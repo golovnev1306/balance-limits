@@ -69,10 +69,18 @@ html, body {
     background-color: #99ffaa;
 }
 
+.is-bid {
+    background-color: #709fff;
+}
+
 .Mui-selected .not-comparing {
     background-color: #ffccee;
 }
 
 .Mui-selected .comparing {
     background-color: #ccffee;
+}
+
+.Mui-selected .is-bid {
+    background-color: #90bfff;
 }

@@ -1,6 +1,6 @@
 import {connect} from "react-redux"
 import {getSelectedDeal} from "../selectors"
-import React, {FC, Fragment} from "react"
+import React, {FC, Fragment, useEffect, useState} from "react"
 import CommonTable from "./common/CommonTable"
 import DealForm from "./common/forms/DealForm"
 import {deleteDealThunk} from "../redux/deals-reducer"
@@ -31,6 +31,22 @@ const Deals: FC<MapStatePropsType & MapDispatchPropsType & OwnPropsType> = ({del
             deleteDeal(selectedDeal.id)
     }
 
+    type ShowModeType = 'all' | 'onlyDeals' | 'onlyBids'
+
+    const [showMode, setShowMode] = useState<ShowModeType>('all')
+    const [filteredDeals, setFilteredDeals] = useState<DealType[]>([])
+
+    useEffect(() => {
+        switch (showMode) {
+            case 'all': setFilteredDeals(dealsResult)
+                break
+            case 'onlyBids': setFilteredDeals(dealsResult.filter(deal => deal.is_bid))
+                break
+            case 'onlyDeals': setFilteredDeals(dealsResult.filter(deal => !deal.is_bid))
+                break
+        }
+    }, [dealsResult, showMode])
+
     return (
         <Fragment>
         {/*@ts-ignore*/}
@@ -39,12 +55,15 @@ const Deals: FC<MapStatePropsType & MapDispatchPropsType & OwnPropsType> = ({del
                      ChildrenForm={DealForm}
                      setSelectedItem={setSelectedDeal}
                      selectedItem={selectedDeal}
-                     data={dealsResult}
+                     data={filteredDeals}
                      tableName={'deals'}
                      ChildComponent={BillsByDeal}
                      title={title}
                      modalTitlePostfix={'договор'}
                      handleDelete={handleDelete}
+                     isDeals
+                     showModeDeals={showMode}
+                     setShowModeDeals={setShowMode}
         />
         </Fragment>
     )

@@ -14,6 +14,13 @@ const columnVariants = {
             width: 180
         },
         {
+            field: 'balanceByBids',
+            headerName: 'С учетом заявок',
+            cellClassName: 'super-app-theme--cell',
+            type: 'number',
+            width: 180
+        },
+        {
             field: 'balanceByPayments',
             headerName: 'Остаток по оплате',
             cellClassName: 'super-app-theme--cell',
@@ -31,7 +38,8 @@ const columnVariants = {
         {field: 'kvfo', headerName: 'КВФО', width: 100, cellClassName: 'super-app-theme--cell'},
         {field: 'ok', headerName: 'Отраслевой код', width: 200, cellClassName: 'super-app-theme--cell'},
         {field: 'summ', headerName: 'Сумма', type: 'number', cellClassName: 'super-app-theme--cell', width: 150},
-        {field: 'balance', headerName: 'Остаток', type: 'number', cellClassName: 'super-app-theme--cell', width: 150}
+        {field: 'balance', headerName: 'Остаток', type: 'number', cellClassName: 'super-app-theme--cell', flex: 1},
+        {field: 'is_bid', width: 0},
     ],
     'bills': [
         {field: 'number', headerName: 'Номер', width: 150, cellClassName: 'super-app-theme--cell'},

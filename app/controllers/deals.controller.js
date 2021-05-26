@@ -6,7 +6,7 @@ module.exports = {
             const deals = await Deal.findAll({
                 attributes: ['id', 'number', 'date',
                     'product', 'summ',
-                    'partner', 'limit_id',
+                    'partner', 'limit_id', 'is_bid',
                     'Limit.kvr', 'Limit.kosgu',
                     'Limit.kvfo', 'Limit.ok'
                 ],
@@ -31,7 +31,7 @@ module.exports = {
                 },
                 attributes: ['id', 'number', 'date',
                     'product', 'summ',
-                    'partner', 'limit_id',
+                    'partner', 'limit_id', 'is_bid',
                     'Limit.kvr', 'Limit.kosgu',
                     'Limit.kvfo', 'Limit.ok'
                 ],

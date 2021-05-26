@@ -11,10 +11,12 @@ import {formatNumber} from "../../helpers"
 import {getPageSizes} from "../../selectors"
 import {connect} from "react-redux"
 import {setPageSizes} from "../../redux/app-reducer"
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import Grid from "@material-ui/core/Grid";
 
 
 const renderCell = params => {
-    console.log('params',params)
     let value
     switch (params.colDef.type) {
         case 'date':
@@ -38,7 +40,7 @@ const renderCell = params => {
 const CommonTable = ({
                          title, selectedItem, setSelectedItem, tableName, data, ChildComponent, modalTitlePostfix,
                          handleDelete, ChildrenForm, resetPage, setResetPage, pageSizes, setPageSize,
-                         isCompareMode
+                         isCompareMode, isDeals, showModeDeals, setShowModeDeals
                      }) => {
 
     const memoizedColumns = useMemo(() => {
@@ -52,11 +54,15 @@ const CommonTable = ({
             } else {
                 delete column.cellClassName
             }
+
+            if (isDeals) {
+                column.cellClassName = ({row}) => {
+                    return row.is_bid ? 'is-bid' : ''
+                }
+            }
         })
         return [...columns]
     }, [isCompareMode])
-
-
 
 
     const [sums, setSums] = useState({})
@@ -182,7 +188,15 @@ const CommonTable = ({
                 onRowSelected={rowSelectedHandler}
                 onFilterModelChange={filterModelChange}
             />
-            <Summary sums={sums} isActual={isActual}/>
+            <Grid container>
+                {isDeals && <Grid item sm={4} xs={12}>
+                    <Select fullWidth onChange={value => {setShowModeDeals(value.target.value)}} value={showModeDeals}>
+                        <MenuItem value="all">Все</MenuItem>
+                        <MenuItem value="onlyDeals">Только договоры</MenuItem>
+                        <MenuItem value="onlyBids">Только заявки</MenuItem>
+                    </Select></Grid>}
+                <Grid item sm={isDeals ? 8 : 12} xs={12}><Summary sums={sums} isActual={isActual}/></Grid>
+            </Grid>
 
 
             {selectedItem?.id && ChildComponent && (

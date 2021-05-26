@@ -17,7 +17,7 @@ const Deal = sequelize.define('Deal', {
         allowNull: false,
     },
     product: {
-        type: DataTypes.STRING(45),
+        type: DataTypes.TEXT,
         allowNull: false,
     },
     summ: {
@@ -25,11 +25,15 @@ const Deal = sequelize.define('Deal', {
         allowNull: false,
     },
     partner: {
-        type: DataTypes.STRING(45),
+        type: DataTypes.STRING(60),
         allowNull: false,
     },
     limit_id: {
         type: DataTypes.INTEGER,
+    },
+    is_bid: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
     }
 }, {tableName: 'deals', timestamps: false})
 

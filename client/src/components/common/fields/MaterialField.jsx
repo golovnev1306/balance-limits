@@ -6,6 +6,8 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormHelperText from "@material-ui/core/FormHelperText";
+import {Checkbox} from "@material-ui/core";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 const MaterialField = ({input, meta, itemsForSelectField, partners, allowNullParent, ...rest}) => {
 
@@ -51,7 +53,6 @@ const MaterialField = ({input, meta, itemsForSelectField, partners, allowNullPar
                     disableClearable={true}
                     onChange={(e, newValue) => {
                         input.onChange(newValue)
-                        console.log(newValue)
                     }}
                     getOptionSelected={(option, value) => {
                         return option === value
@@ -66,6 +67,13 @@ const MaterialField = ({input, meta, itemsForSelectField, partners, allowNullPar
                     }
                 />
 
+            )
+        case 'checkbox':
+            return (
+                <FormControlLabel
+                    control={<Checkbox {...input} />}
+                    label="Является заявкой"
+                />
             )
         default:
             return (

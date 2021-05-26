@@ -32,16 +32,31 @@ export const convertToExcelData = (items, instanceName) => {
     let dataExcel = []
     items.map(item => {
         let rowExcel = []
+
         columnsVariants[instanceName].map(column => {
+            const style = {
+                alignment: {wrapText: true},
+                border: {bottom: {style: 'thin', color: {rgb: '000000'}}},
+                numFmt: "0.00"
+            }
+
+            if (column.field === 'is_bid') {
+                style.numFmt = "0"
+            }
+
+            if (item.is_bid) {
+                style.fill = {
+                    fgColor: {
+                        rgb: "FFCCEEFF"
+                    }
+                }
+            }
+
             rowExcel.push({
                 value: item[column.field] !== null
                     ? (column.field === 'date' ? new Date(item[column.field]).toLocaleDateString() : item[column.field])
                     : '',
-                style: {
-                    alignment: {wrapText: true},
-                    border: {bottom: {style: 'thin', color: {rgb: '000000'}}},
-                    numFmt: "0.00"
-                }
+                style
             })
         })
         dataExcel.push(rowExcel)
@@ -69,7 +84,6 @@ export const countBalances = (parents, children, instanceName) => {
         if (child[columnName] !== -1) {
             itemsBalances[child[columnName]] -= child.summ
         }
-
     })
     return itemsBalances
 }
