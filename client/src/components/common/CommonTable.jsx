@@ -38,7 +38,7 @@ const renderCell = params => {
 
 
 const CommonTable = ({
-                         title, selectedItem, setSelectedItem, tableName, data, ChildComponent, modalTitlePostfix,
+                         instance, title, selectedItem, setSelectedItem, tableName, data, ChildComponent, modalTitlePostfix,
                          handleDelete, ChildrenForm, resetPage, setResetPage, pageSizes, setPageSize,
                          isCompareMode, isDeals, showModeDeals, setShowModeDeals
                      }) => {
@@ -143,6 +143,7 @@ const CommonTable = ({
                                   color="primary"
                                   title={'Добавить'}
                                   modalTitlePostfix={modalTitlePostfix}
+                                  instance={instance}
                 />
                 {selectedItem?.id && (
                     <>
@@ -153,6 +154,7 @@ const CommonTable = ({
                                           color="primary"
                                           title={'Скопировать'}
                                           modalTitlePostfix={modalTitlePostfix}
+                                          instance={instance}
                         />
 
 
@@ -163,6 +165,7 @@ const CommonTable = ({
                                           title={'Изменить'}
                                           modalTitlePostfix={modalTitlePostfix}
                                           withButton={true}
+                                          instance={instance}
                         />
                     </>)}
                 {selectedItem?.id && (
@@ -189,13 +192,13 @@ const CommonTable = ({
                 onFilterModelChange={filterModelChange}
             />
             <Grid container>
-                {isDeals && <Grid item sm={4} xs={12}>
+                {instance === 'deals' && <Grid item sm={4} xs={12}>
                     <Select fullWidth onChange={value => {setShowModeDeals(value.target.value)}} value={showModeDeals}>
                         <MenuItem value="all">Все</MenuItem>
                         <MenuItem value="onlyDeals">Только договоры</MenuItem>
                         <MenuItem value="onlyBids">Только заявки</MenuItem>
                     </Select></Grid>}
-                <Grid item sm={isDeals ? 8 : 12} xs={12}><Summary sums={sums} isActual={isActual}/></Grid>
+                <Grid item sm={instance === 'deals' ? 8 : 12} xs={12}><Summary sums={sums} isActual={isActual}/></Grid>
             </Grid>
 
 

@@ -64,6 +64,7 @@ const Deals: FC<MapStatePropsType & MapDispatchPropsType & OwnPropsType> = ({del
                      isDeals
                      showModeDeals={showMode}
                      setShowModeDeals={setShowMode}
+                     instance={'deals'}
         />
         </Fragment>
     )

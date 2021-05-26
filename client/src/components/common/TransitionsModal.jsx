@@ -6,7 +6,7 @@ import Fade from '@material-ui/core/Fade'
 import Button from "@material-ui/core/Button"
 import {connect} from "react-redux"
 import {getSelectedDealId, getSelectedLimitId} from "../../selectors"
-import MenuItem from "@material-ui/core/MenuItem";
+import initialValuesForms from "../../config/initialValuesForms";
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const TransitionsModal = ({ChildrenForm, mode, selectedItem, title, modalTitlePostfix, selectedLimitId, selectedDealId, ...rest}) => {
+const TransitionsModal = ({instance, ChildrenForm, mode, selectedItem, title, modalTitlePostfix, selectedLimitId, selectedDealId, ...rest}) => {
     const classes = useStyles()
     const [open, setOpen] = useState(false)
 
@@ -35,23 +35,26 @@ const TransitionsModal = ({ChildrenForm, mode, selectedItem, title, modalTitlePo
         setOpen(false)
     }
 
-    let initialValues = {}
+    let initialValues = {...initialValuesForms[instance]}
 
     switch (mode) {
         case 'update':
             initialValues = {
+                ...initialValues,
                 ...selectedItem,
                 deal_id: selectedItem.deal_id,
             }
             break
         case 'copy':
             initialValues = {
+                ...initialValues,
                 ...selectedItem,
                 id: null,
             }
             break
         case 'add':
             initialValues = {
+                ...initialValues,
                 limit_id: selectedLimitId ? selectedLimitId : -1,
                 deal_id: selectedDealId,
             }
