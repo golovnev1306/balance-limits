@@ -1,26 +1,52 @@
 import {connect} from "react-redux"
-import {getPayments, getPaymentsByLimit, getSelectedBill, getSelectedPayment} from "../selectors"
-import React, {Fragment} from "react"
+import {getSelectedBill, getSelectedPayment} from "../selectors"
+import React, {FC, Fragment} from "react"
 import CommonTable from "./common/CommonTable"
 import {setSelectedBill, setSelectedPayment} from "../redux/app-reducer"
 import {deletePaymentThunk} from "../redux/payments-reducer";
 import PaymentForm from "./common/forms/PaymentForm";
 import BillForm from "./common/forms/BillForm";
 import {deleteBillThunk} from "../redux/bills-reducer";
+import {BillType, Nullable, PaymentType, StateType, TDispatch} from "../types";
 
 
-const PaymentsByLimit = ({deletePayment, deleteBill, setSelectedPayment, selectedPayment, selectedBill, setSelectedBill, paymentsResult, title, resetPage, setResetPage, isCompareMode}) => {
+type MapStatePropsType = {
+    selectedBill: Nullable<BillType>,
+    selectedPayment: Nullable<PaymentType>
+}
+
+type MapDispatchPropsType = {
+    deleteBill: (billId: number) => void,
+    setSelectedBill: (selectedBill: BillType) => void,
+    deletePayment: (paymentId: number) => void,
+    setSelectedPayment: (selectedPayment: PaymentType) => void
+}
+
+type OwnPropsType = {
+    paymentsResult: PaymentType[]
+    title: string
+    resetPage?: boolean
+    setResetPage?: (isReset: boolean) => void
+    isCompareMode?: boolean
+}
+
+const PaymentsByLimit: FC<MapStatePropsType & MapDispatchPropsType & OwnPropsType> = ({deletePayment, deleteBill,
+      setSelectedPayment, selectedPayment, selectedBill, setSelectedBill,
+      paymentsResult, title, resetPage, setResetPage, isCompareMode}) => {
 
     const handleDelete = () => {
+        if (selectedPayment)
         deletePayment(selectedPayment.id)
     }
 
     const handleDeleteBill = () => {
+        if (selectedBill)
         deleteBill(selectedBill.id)
     }
 
     return (
         <Fragment>
+            {/*@ts-ignore*/}
         <CommonTable ChildrenForm={PaymentForm}
                      setSelectedItem={setSelectedPayment}
                      selectedItem={selectedPayment}
@@ -33,7 +59,9 @@ const PaymentsByLimit = ({deletePayment, deleteBill, setSelectedPayment, selecte
                      setResetPage={setResetPage}
                      isCompareMode={isCompareMode}
         />
-            {isCompareMode && selectedPayment.id && (
+            {isCompareMode && selectedPayment?.id && (
+                <Fragment>
+                {/*@ts-ignore*/}
                 <CommonTable ChildrenForm={BillForm}
                              tableName={'bills'}
                              data={selectedPayment.available ? selectedPayment.available : []}
@@ -42,14 +70,14 @@ const PaymentsByLimit = ({deletePayment, deleteBill, setSelectedPayment, selecte
                              setSelectedItem={setSelectedBill}
                              modalTitlePostfix={'счет'}
                              handleDelete={handleDeleteBill}
-                />
+                /></Fragment>
             )}
         </Fragment>
     )
 }
 
-const mapStateToProps = state => ({selectedBill: getSelectedBill(state), selectedPayment: getSelectedPayment(state)})
-const mapDispatchToProps = dispatch => {
+const mapStateToProps = (state: StateType): MapStatePropsType => ({selectedBill: getSelectedBill(state), selectedPayment: getSelectedPayment(state)})
+const mapDispatchToProps = (dispatch: TDispatch): MapDispatchPropsType => {
     return {
         deleteBill: billId => dispatch(deleteBillThunk(billId)),
         setSelectedBill: selectedBill => {
@@ -62,4 +90,4 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PaymentsByLimit)
+export default connect<MapStatePropsType, MapDispatchPropsType, OwnPropsType, StateType>(mapStateToProps, mapDispatchToProps)(PaymentsByLimit)

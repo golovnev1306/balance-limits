@@ -1,9 +1,9 @@
 import React from "react"
-import {connect} from "react-redux";
-import CommonForm from "./CommonForm";
-import formsFields from "../../../config/formsFields";
-import {addDealThunk, updateDealThunk} from "../../../redux/deals-reducer";
-import {getLimits, getPartners} from "../../../selectors";
+import {connect} from "react-redux"
+import CommonForm from "./CommonForm"
+import formsFields from "../../../config/formsFields"
+import {addDealThunk, updateDealThunk} from "../../../redux/deals-reducer"
+import {getLimits, getPartners} from "../../../selectors"
 
 const DealForm = ({mode, addDeal, updateDeal, handleClose, initialValues, limits, partners}) => {
 

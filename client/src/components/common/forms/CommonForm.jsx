@@ -1,9 +1,9 @@
-import FormControl from "@material-ui/core/FormControl";
-import {Field, reduxForm} from "redux-form";
-import MaterialField from "../fields/MaterialField";
-import Button from "@material-ui/core/Button";
-import SaveIcon from "@material-ui/icons/Save";
-import React from "react";
+import FormControl from "@material-ui/core/FormControl"
+import {Field, reduxForm} from "redux-form"
+import MaterialField from "../fields/MaterialField"
+import Button from "@material-ui/core/Button"
+import SaveIcon from "@material-ui/icons/Save"
+import React from "react"
 
 const CommonForm = ({mode, handleSubmit, addItem, updateItem, handleClose, pristine, formsFields, itemsForSelectorField, partners, allowNullParent}) => {
 

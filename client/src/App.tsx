@@ -1,4 +1,4 @@
-import React, {Fragment, Suspense, useEffect} from 'react'
+import React, {FC, Fragment, Suspense, useEffect} from 'react'
 import {connect} from 'react-redux'
 import './App.css'
 import Header from "./Header"
@@ -9,15 +9,33 @@ import Main from "./components/pages/Main"
 import FreeDeals from "./components/pages/FreeDeals"
 import AllDeals from "./components/pages/AllDeals"
 import AllBills from "./components/pages/AllBills"
-import Import from "./components/pages/Import";
-import Snackbar from "@material-ui/core/Snackbar";
-import Alert from "@material-ui/lab/Alert";
-import AllPayments from "./components/pages/AllPayments";
-import Loading from "./components/common/Loading";
+import Import from "./components/pages/Import"
+import Snackbar from "@material-ui/core/Snackbar"
+import Alert from "@material-ui/lab/Alert"
+import AllPayments from "./components/pages/AllPayments"
+import Loading from "./components/common/Loading"
+import {BillType, DealType, LimitType, MessageType, StateType, TDispatch} from "./types"
+import {Dispatch} from "redux";
 
 const ExportCss = React.lazy(() => import('./components/pages/ExportCss'))
 
-const App = ({initApp, isInitialized, limits, deals, bills, message, closeMessage}) => {
+type MapStateType = {
+    isInitialized: boolean
+    limits: LimitType[]
+    deals: DealType[]
+    bills: BillType[]
+    message: MessageType
+}
+
+type MapDispatchType = {
+    initApp: () => void
+    setSelectedLimit: (selectedLimit: LimitType) => void,
+    setSelectedDeal: (selectedDeal: DealType) => void
+    setSelectedBill: (selectedBill: BillType) => void
+    closeMessage: () => void
+}
+
+const App: FC<MapStateType & MapDispatchType> = ({initApp, isInitialized, limits, deals, bills, message, closeMessage}) => {
     useEffect(() => {
         initApp()
     }, [])
@@ -28,6 +46,8 @@ const App = ({initApp, isInitialized, limits, deals, bills, message, closeMessag
 
 
     if (isInitialized) {
+        // @ts-ignore
+        // @ts-ignore
         return (
             <Fragment>
                 <Header/>
@@ -52,6 +72,7 @@ const App = ({initApp, isInitialized, limits, deals, bills, message, closeMessag
                                 </Suspense>
                             </Route>
                             <Route exact path="/import">
+                                {/*@ts-ignore*/}
                                 <Import/>
                             </Route>
                             <Route exact path="/">
@@ -78,7 +99,7 @@ const App = ({initApp, isInitialized, limits, deals, bills, message, closeMessag
 
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: StateType) => {
     return {
         isInitialized: getIsInitialized(state),
         limits: getLimitsWithBalances(state),
@@ -88,12 +109,12 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: TDispatch) => {
     return {
         initApp: () => dispatch(initApp()),
-        setSelectedLimit: selectedLimit => dispatch(setSelectedLimit(selectedLimit)),
-        setSelectedDeal: selectedDeal => dispatch(setSelectedDeal(selectedDeal)),
-        setSelectedBill: selectedBill => dispatch(setSelectedBill(selectedBill)),
+        setSelectedLimit: (selectedLimit: LimitType) => dispatch(setSelectedLimit(selectedLimit)),
+        setSelectedDeal: (selectedDeal: DealType) => dispatch(setSelectedDeal(selectedDeal)),
+        setSelectedBill: (selectedBill: BillType) => dispatch(setSelectedBill(selectedBill)),
         closeMessage: () => dispatch(setMessage(''))
     }
 }

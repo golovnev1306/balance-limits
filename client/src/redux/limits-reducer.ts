@@ -2,22 +2,21 @@ import limitsApi from '../api/limitsApi'
 import {setMessage, setSelectedBill, setSelectedDeal, setSelectedLimit} from "./app-reducer"
 import {formatOutputData} from "../helpers"
 import {MESSAGE_ERROR_UNIVERSAL, TYPE_MESSAGE_ERROR} from "../constants"
-
-
-const SET_LIMITS = 'SET_LIMITS'
-const ADD_LIMIT = 'ADD_LIMIT'
+import {LimitType, ReturnActionsType, TDispatch} from "../types"
 
 const initialState = {
-    limits: []
+    limits: [] as LimitType[]
 }
 
-const limitsReducer = (state = initialState, action) => {
+type LimitsActionsType = ReturnActionsType<typeof actions>
+
+const limitsReducer = (state = initialState, action: LimitsActionsType) => {
     switch (action.type) {
-        case SET_LIMITS:
+        case "SET_LIMITS":
             return {
                 limits: action.limits
             }
-        case ADD_LIMIT:
+        case "ADD_LIMIT":
             return {
                 limits: [...state.limits, action.limit],
             }
@@ -26,16 +25,18 @@ const limitsReducer = (state = initialState, action) => {
     }
 }
 
-const setLimits = limits => ({type: SET_LIMITS, limits})
-const addLimit = limit => ({type: ADD_LIMIT, limit})
+const actions = {
+    setLimits: (limits: LimitType[]) => ({type: "SET_LIMITS", limits} as const),
+    addLimit: (limit: LimitType) => ({type: "ADD_LIMIT", limit} as const)
+}
 
 export const setLimitsThunk = () => {
-    return async (dispatch) => {
+    return async (dispatch: TDispatch) => {
         try {
             const result = await limitsApi.getAll()
             if (result.status === 200) {
                 const limits = result.data
-                dispatch(setLimits(limits))
+                dispatch(actions.setLimits(limits))
             }
         } catch (er) {
             dispatch(setMessage(er?.response?.data?.messageBody ? er.response.data.messageBody : MESSAGE_ERROR_UNIVERSAL, TYPE_MESSAGE_ERROR))
@@ -43,12 +44,12 @@ export const setLimitsThunk = () => {
     }
 }
 
-export const addLimitThunk = (values) => {
-    return async (dispatch) => {
+export const addLimitThunk = (values: any) => {
+    return async (dispatch: TDispatch) => {
         try {
             const result = await limitsApi.add(formatOutputData(values))
             if (result.status === 201) {
-                dispatch(addLimit(result.data))
+                dispatch(actions.addLimit(result.data))
                 dispatch(setMessage('Лимит добавлен'))
             }
         } catch (er) {
@@ -57,9 +58,9 @@ export const addLimitThunk = (values) => {
     }
 }
 
-export const deleteLimitThunk = limitId => {
+export const deleteLimitThunk = (limitId: number) => {
 
-    return async (dispatch) => {
+    return async (dispatch: TDispatch) => {
 
         try {
             const result = await limitsApi.delete(limitId)
@@ -76,8 +77,8 @@ export const deleteLimitThunk = limitId => {
     }
 }
 
-export const updateLimitThunk = (values) => {
-    return async (dispatch) => {
+export const updateLimitThunk = (values: any) => {
+    return async (dispatch: TDispatch) => {
         try {
             const result = await limitsApi.update(formatOutputData(values))
             if (result.status === 200) {

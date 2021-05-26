@@ -11,10 +11,10 @@ import {formatNumber} from "../../helpers"
 import {getPageSizes} from "../../selectors"
 import {connect} from "react-redux"
 import {setPageSizes} from "../../redux/app-reducer"
-import clsx from 'clsx'
 
 
 const renderCell = params => {
+    console.log('params',params)
     let value
     switch (params.colDef.type) {
         case 'date':
@@ -59,7 +59,7 @@ const CommonTable = ({
 
 
 
-    const [sum, setSum] = useState({})
+    const [sums, setSums] = useState({})
 
     // костылек, предупреждающий о том, что итоги могут не соответствовать действительности,
     // в случае, если стоит фильтрация и происходит изменение данных в этой таблицы.
@@ -98,7 +98,7 @@ const CommonTable = ({
             balanceByPayments += i.balanceByPayments
         })
 
-        setSum({
+        setSums({
             sum, balance, balanceByPayments
         })
     }
@@ -182,7 +182,7 @@ const CommonTable = ({
                 onRowSelected={rowSelectedHandler}
                 onFilterModelChange={filterModelChange}
             />
-            <Summary sum={sum} isActual={isActual}/>
+            <Summary sums={sums} isActual={isActual}/>
 
 
             {selectedItem?.id && ChildComponent && (

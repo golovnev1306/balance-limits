@@ -1,11 +1,15 @@
-import {NavLink} from "react-router-dom";
-import MenuItem from "@material-ui/core/MenuItem";
-import React from "react";
-import {clearAllSelected} from "./redux/app-reducer";
-import {connect} from "react-redux";
+import {NavLink} from "react-router-dom"
+import MenuItem from "@material-ui/core/MenuItem"
+import React, {FC} from "react"
+import {clearAllSelected} from "./redux/app-reducer"
+import {connect} from "react-redux"
+import {StateType} from "./types"
 
+type MapDispatchPropsType = {
+    clearAllSelected: () => void
+}
 
-const Header = ({clearAllSelected}) => {
+const Header: FC<MapDispatchPropsType> = ({clearAllSelected}) => {
 
     const clickHandler = () => {
         clearAllSelected()
@@ -58,4 +62,4 @@ const Header = ({clearAllSelected}) => {
     )
 }
 
-export default connect(null, dispatch => ({clearAllSelected: () => dispatch(clearAllSelected())}))(Header)
+export default connect<{}, MapDispatchPropsType, {}, StateType>(null, {clearAllSelected})(Header)

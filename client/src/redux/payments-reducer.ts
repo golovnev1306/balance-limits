@@ -6,23 +6,23 @@ import {
     formatOutputData
 } from "../helpers"
 import {MESSAGE_ERROR_UNIVERSAL, TYPE_MESSAGE_ERROR} from "../constants"
-
-const ADD_PAYMENT = 'ADD_PAYMENT'
-const SET_PAYMENTS = 'SET_PAYMENTS'
+import {PaymentType, ReturnActionsType, TDispatch} from "../types";
 
 const initialState = {
-    payments: []
+    payments: [] as PaymentType[]
 }
 
-const paymentsReducer = (state = initialState, action) => {
+type PaymentsActionsType = ReturnActionsType<typeof actions>
+
+const paymentsReducer = (state = initialState, action: PaymentsActionsType) => {
     switch (action.type) {
-        case SET_PAYMENTS:
+        case "SET_PAYMENTS":
             return {
                 payments: [
                     ...action.payments,
                 ]
             }
-        case ADD_PAYMENT:
+        case "ADD_PAYMENT":
             return {
                 payments: [
                     ...state.payments,
@@ -34,17 +34,20 @@ const paymentsReducer = (state = initialState, action) => {
     }
 }
 
-export const setPayments = payments => ({type: SET_PAYMENTS, payments})
-export const addPayment = payment => ({type: ADD_PAYMENT, payment})
+
+const actions = {
+    setPayments: (payments: PaymentType[]) => ({type: "SET_PAYMENTS", payments} as const),
+    addPayment: (payment: PaymentType) => ({type: "ADD_PAYMENT", payment} as const)
+}
 
 
 export const setPaymentsThunk = () => {
-    return async (dispatch) => {
+    return async (dispatch: TDispatch) => {
         try {
             const result = await paymentsApi.get()
             if (result.status === 200) {
                 const payments = result.data
-                dispatch(setPayments(payments))
+                dispatch(actions.setPayments(payments))
             }
         } catch (er) {
             dispatch(setMessage(er?.response?.data?.messageBody ? er.response.data.messageBody : MESSAGE_ERROR_UNIVERSAL, TYPE_MESSAGE_ERROR))
@@ -54,12 +57,12 @@ export const setPaymentsThunk = () => {
     }
 }
 
-export const addPaymentThunk = (values) => {
-    return async (dispatch) => {
+export const addPaymentThunk = (values: any) => {
+    return async (dispatch: TDispatch) => {
         try {
             const result = await paymentsApi.add(formatOutputData(values))
             if (result.status === 201) {
-                dispatch(addPayment(formatInputData(result.data)))
+                dispatch(actions.addPayment(formatInputData(result.data)))
                 dispatch(setMessage('Оплата добавлена'))
             }
         } catch (er) {
@@ -68,8 +71,8 @@ export const addPaymentThunk = (values) => {
     }
 }
 
-export const deletePaymentThunk = paymentId => {
-    return async (dispatch) => {
+export const deletePaymentThunk = (paymentId: number) => {
+    return async (dispatch: TDispatch) => {
         try {
             const result = await paymentsApi.delete(paymentId)
             if (result.status === 200) {
@@ -83,8 +86,8 @@ export const deletePaymentThunk = paymentId => {
     }
 }
 
-export const updatePaymentThunk = (values) => {
-    return async (dispatch) => {
+export const updatePaymentThunk = (values: any) => {
+    return async (dispatch: TDispatch) => {
         try {
             const result = await paymentsApi.update(formatOutputData(values))
             if (result.status === 200) {
@@ -98,8 +101,8 @@ export const updatePaymentThunk = (values) => {
     }
 }
 
-export const importPaymentsThunk = (values) => {
-    return async (dispatch) => {
+export const importPaymentsThunk = (values: any) => {
+    return async (dispatch: TDispatch) => {
         try {
             const result = await paymentsApi.import(createJsFormData(values))
             if (result.status === 201) {

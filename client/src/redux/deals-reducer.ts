@@ -1,24 +1,23 @@
 import dealsApi from '../api/dealsApi'
-import {setMessage, setSelectedBill, setSelectedDeal} from "./app-reducer";
-import moment from "moment"
-import {formatInputData, formatOutputData} from "../helpers";
-import {MESSAGE_ERROR_UNIVERSAL, TYPE_MESSAGE_ERROR} from "../constants";
-import {addPartner, setPartners} from "./partners-reducer";
-
-const SET_DIALS = 'SET_DIALS'
-const ADD_DIAL = 'ADD_DIAL'
+import {setMessage, setSelectedBill, setSelectedDeal} from "./app-reducer"
+import {formatInputData, formatOutputData} from "../helpers"
+import {MESSAGE_ERROR_UNIVERSAL, TYPE_MESSAGE_ERROR} from "../constants"
+import {addPartner, setPartners} from "./partners-reducer"
+import {DealType, ReturnActionsType, TDispatch} from "../types"
 
 const initialState = {
-    deals: []
+    deals: [] as DealType[]
 }
 
-const dealsReducer = (state = initialState, action) => {
+type DealsActionsType = ReturnActionsType<typeof actions>
+
+const dealsReducer = (state = initialState, action: DealsActionsType) => {
     switch (action.type) {
-        case SET_DIALS:
+        case "SET_DIALS":
             return {
                 deals: action.deals
             }
-        case ADD_DIAL:
+        case "ADD_DIAL":
             return {
                 deals: [
                     ...state.deals,
@@ -30,23 +29,26 @@ const dealsReducer = (state = initialState, action) => {
     }
 }
 
-const setDials = deals => ({type: SET_DIALS, deals})
-export const addDeal = deal => ({type: ADD_DIAL, deal})
+
+const actions = {
+    setDials: (deals: DealType[]) => ({type: 'SET_DIALS', deals} as const),
+    addDeal: (deal: DealType) => ({type: 'ADD_DIAL', deal} as const)
+}
 
 
 export const setDealsThunk = () => {
-    return async (dispatch) => {
+    return async (dispatch: TDispatch) => {
         try {
             const result = await dealsApi.getDeals()
             if (result.status === 200) {
-                let partners = []
+                let partners = [] as string[]
                 const deals = result.data
-                deals.map((deal, index) => {
+                deals.map((deal: DealType, index: number) => {
                     partners.push(deal.partner)
                     deals[index] = formatInputData(deal, ['limit_id'])
                 })
                 dispatch(setPartners(partners))
-                dispatch(setDials(deals))
+                dispatch(actions.setDials(deals))
             }
         } catch (er) {
             dispatch(setMessage(er?.response?.data?.messageBody ? er.response.data.messageBody : MESSAGE_ERROR_UNIVERSAL, TYPE_MESSAGE_ERROR))
@@ -55,13 +57,13 @@ export const setDealsThunk = () => {
     }
 }
 
-export const addDealThunk = (values) => {
-    return async (dispatch) => {
+export const addDealThunk = (values: any) => {
+    return async (dispatch: TDispatch) => {
         try {
             const result = await dealsApi.add(formatOutputData(values))
             if (result.status === 201) {
                 dispatch(addPartner(result.data.partner))
-                dispatch(addDeal(formatInputData(result.data, ['limit_id'])))
+                dispatch(actions.addDeal(formatInputData(result.data, ['limit_id'])))
                 dispatch(setMessage('Договор добавлен'))
             }
         } catch (er) {
@@ -70,8 +72,8 @@ export const addDealThunk = (values) => {
     }
 }
 
-export const deleteDealThunk = dealId => {
-    return async (dispatch) => {
+export const deleteDealThunk = (dealId: number) => {
+    return async (dispatch: TDispatch) => {
         try {
             const result = await dealsApi.delete(dealId)
             if (result.status === 200) {
@@ -86,8 +88,8 @@ export const deleteDealThunk = dealId => {
     }
 }
 
-export const updateDealThunk = (values) => {
-    return async (dispatch) => {
+export const updateDealThunk = (values: any) => {
+    return async (dispatch: TDispatch) => {
         try {
             const result = await dealsApi.update(formatOutputData(values))
             if (result.status === 200) {
@@ -100,5 +102,6 @@ export const updateDealThunk = (values) => {
         }
     }
 }
+
 
 export default dealsReducer

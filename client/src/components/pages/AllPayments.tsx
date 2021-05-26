@@ -1,18 +1,16 @@
 import {connect} from "react-redux";
-import {
-    getBills,
-    getDealsWithBalanceByBills,
-    getPayments,
-    getPaymentsComparedWithBills,
-    getProblemsPayments
-} from "../../selectors";
-import React, {Fragment, useState} from "react";
-import Deals from "../Deals";
-import Bills from "../Bills";
+import {getPaymentsComparedWithBills, getProblemsPayments} from "../../selectors";
+import React, {FC, Fragment, useState} from "react";
 import Payments from "../Payments";
 import Switch from "@material-ui/core/Switch";
+import {PaymentType, StateType} from "../../types";
 
-const AllPayments = ({payments, promlemsPayments}) => {
+type MapStatePropsType = {
+    payments: PaymentType[]
+    problemsPayments: PaymentType[]
+}
+
+const AllPayments: FC<MapStatePropsType> = ({payments, problemsPayments}) => {
 
     const [isCompareMode, setIsCompareMode] = useState(false)
     const onChangeHandler = () => {
@@ -27,7 +25,7 @@ const AllPayments = ({payments, promlemsPayments}) => {
 
     return (
         <Fragment>
-            <Payments paymentsResult={isOnlyProblems ? promlemsPayments : payments} title={'Оплата'} isCompareMode={isCompareMode}/>
+            <Payments paymentsResult={isOnlyProblems ? problemsPayments : payments} title={'Оплата'} isCompareMode={isCompareMode}/>
             <Switch
                 color="primary"
                 checked={isCompareMode}
@@ -46,7 +44,7 @@ const AllPayments = ({payments, promlemsPayments}) => {
     )
 }
 
-export default connect(state => ({
+export default connect<MapStatePropsType, {}, {}, StateType>(state => ({
     payments: getPaymentsComparedWithBills(state),
-    promlemsPayments: getProblemsPayments(state)
+    problemsPayments: getProblemsPayments(state)
 }))(AllPayments)

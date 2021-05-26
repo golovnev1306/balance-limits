@@ -8,7 +8,7 @@ import {reducer as formReducer} from "redux-form"
 import partnersReducer from "./partners-reducer"
 import paymentsReducer from "./payments-reducer"
 
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
     app: appReducer,
     limits: limitsReducer,
     deals: dealsReducer,

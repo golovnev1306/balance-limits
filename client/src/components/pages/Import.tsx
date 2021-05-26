@@ -1,28 +1,32 @@
-import React from "react";
-import Button from "@material-ui/core/Button";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControl from "@material-ui/core/FormControl";
+import React, {FC} from "react"
+import Button from "@material-ui/core/Button"
+import FormControlLabel from "@material-ui/core/FormControlLabel"
+import Checkbox from "@material-ui/core/Checkbox"
+import FormControl from "@material-ui/core/FormControl"
 import styles from './Import.module.css'
-import {Field, reduxForm} from "redux-form"
+import {Field, InjectedFormProps, reduxForm} from "redux-form"
 import CloudUploadIcon from '@material-ui/icons/CloudUpload'
-import {importPaymentsThunk} from "../../redux/payments-reducer";
-import {compose} from "redux";
-import {connect} from "react-redux";
-import AttachmentIcon from '@material-ui/icons/Attachment';
-import {required} from "redux-form-validators";
-import Typography from "@material-ui/core/Typography";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import Avatar from "@material-ui/core/Avatar";
-import FolderIcon from '@material-ui/icons/Folder'
-import ListItemText from "@material-ui/core/ListItemText";
+import {importPaymentsThunk} from "../../redux/payments-reducer"
+import {compose} from "redux"
+import {connect} from "react-redux"
+import AttachmentIcon from '@material-ui/icons/Attachment'
+import {required} from "redux-form-validators"
+import Typography from "@material-ui/core/Typography"
+import List from "@material-ui/core/List"
+import ListItem from "@material-ui/core/ListItem"
+import ListItemAvatar from "@material-ui/core/ListItemAvatar"
+import Avatar from "@material-ui/core/Avatar"
+import ListItemText from "@material-ui/core/ListItemText"
 import WarningIcon from '@material-ui/icons/Warning'
+import {StateType, TDispatch} from "../../types";
 
-const Import = ({handleSubmit, importPayments, reset, invalid}) => {
+type MapDispatchPropsType = {
+    importPayments: (values: any) => void
+}
 
-    const submit = (values) => {
+const Import: FC<InjectedFormProps & MapDispatchPropsType> = ({handleSubmit, importPayments, reset, invalid}) => {
+
+    const submit = (values: any) => {
         importPayments(values)
         reset()
     }
@@ -89,8 +93,8 @@ const Import = ({handleSubmit, importPayments, reset, invalid}) => {
     )
 }
 
-const FileInput = ({input, meta, ...rest}) => {
-    const onChangeHandler = (e) => {
+const FileInput = ({input, meta, ...rest}: any) => {
+    const onChangeHandler = (e: any) => {
         input.onChange(e.target.files[0])
     }
 
@@ -113,7 +117,7 @@ const FileInput = ({input, meta, ...rest}) => {
     )
 }
 
-const CheckboxInput = ({input, label}) => {
+const CheckboxInput = ({input, label}: any) => {
 
     return (
         <FormControlLabel
@@ -129,15 +133,15 @@ const CheckboxInput = ({input, label}) => {
     )
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: TDispatch) => {
     return {
-        importPayments: values => dispatch(importPaymentsThunk(values))
+        importPayments: (values: any) => dispatch(importPaymentsThunk(values))
     }
 }
 
-export default compose(reduxForm({
+export default compose(reduxForm<{}, MapDispatchPropsType>({
     form: 'import',
     initialValues: {
         withBind: true
     }
-}), connect(null, mapDispatchToProps))(Import)
+}), connect<{}, MapDispatchPropsType, {}, StateType>(null, mapDispatchToProps))(Import)

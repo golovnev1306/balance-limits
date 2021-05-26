@@ -1,6 +1,6 @@
 import CommonTable from "./common/CommonTable"
 import LimitForm from "./common/forms/LimitForm"
-import React, {useCallback, useMemo, useState} from "react"
+import React, {FC, useCallback, useMemo, useState} from "react"
 import {
     getLimitsWithBalances,
     getSelectedLimit
@@ -9,13 +9,27 @@ import {setSelectedBill, setSelectedDeal, setSelectedLimit} from "../redux/app-r
 import {setDealsThunk} from "../redux/deals-reducer"
 import {deleteLimitThunk} from "../redux/limits-reducer"
 import {connect} from "react-redux"
-import DealsByLimit from "./DealsByLimit";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import PaymentsByLimit from "./PaymentsByLimit";
+import DealsByLimit from "./DealsByLimit"
+import Tabs from "@material-ui/core/Tabs"
+import Tab from "@material-ui/core/Tab"
+import PaymentsByLimit from "./PaymentsByLimit"
+import {BillType, DealType, LimitType, Nullable, StateType, TDispatch} from "../types";
+
+type MapStatePropsType = {
+    selectedLimit: Nullable<LimitType>
+    limitsResult: LimitType[]
+}
+
+type MapDispatchPropsType = {
+    setDials: () => void
+    deleteLimit: (limitId: number) => void
+    setSelectedLimit: (selectedLimit: Nullable<LimitType>) => void
+    setSelectedDeal: (selectedDeal: Nullable<DealType>) => void
+    setSelectedBill: (selectedBill: Nullable<BillType>) => void
+}
 
 
-const Limits = ({limitsResult, deleteLimit, selectedLimit, setSelectedLimit}) => {
+const Limits: FC<MapStatePropsType & MapDispatchPropsType> = ({limitsResult, deleteLimit, selectedLimit, setSelectedLimit}) => {
 
     const [selectedTab, setSelectedTab] = useState(0)
 
@@ -34,11 +48,13 @@ const Limits = ({limitsResult, deleteLimit, selectedLimit, setSelectedLimit}) =>
         );
     }, [limitsResult])
 
-    const handleChangeTab = (event, newValue) => {
+    const handleChangeTab = (event: any, newValue: any) => {
+        console.log('event', event)
         setSelectedTab(newValue)
     }
 
     const handleDelete = () => {
+        if (selectedLimit)
         deleteLimit(selectedLimit.id)
     }
 
@@ -59,6 +75,7 @@ const Limits = ({limitsResult, deleteLimit, selectedLimit, setSelectedLimit}) =>
 
             </TabPanel>
 
+            {/*@ts-ignore*/}
             <CommonTable ChildrenForm={LimitForm}
                          title={'Лимиты'}
                          ChildComponent={selectedTab === 0 ? DealsByLimit : PaymentsByLimit}
@@ -72,14 +89,14 @@ const Limits = ({limitsResult, deleteLimit, selectedLimit, setSelectedLimit}) =>
                 </>)
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: StateType): MapStatePropsType => {
     return {
         selectedLimit: getSelectedLimit(state),
         limitsResult: getLimitsWithBalances(state)
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: TDispatch): MapDispatchPropsType => {
     return {
         setDials: () => dispatch(setDealsThunk()),
         deleteLimit: limitId => dispatch(deleteLimitThunk(limitId)),
@@ -90,4 +107,4 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(Limits)
+export default connect<MapStatePropsType, MapDispatchPropsType, {}, StateType>(mapStateToProps, mapDispatchToProps)(Limits)

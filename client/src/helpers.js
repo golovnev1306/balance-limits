@@ -5,7 +5,9 @@ import moment from "moment"
 export const formatOutputData = values => {
     return {
         ...values,
-        summ: parseFloat((typeof values.summ === 'string') ? values.summ.replace(/\s/g, '').replace(/,/g, '.') : values.summ.toString()),
+        summ: parseFloat((typeof values.summ === 'string')
+            ? values.summ.replace(/\s/g, '').replace(/,/g, '.')
+            : values.summ.toString()),
         limit_id: (values.limit_id === -1) ? null : values.limit_id
     }
 }
@@ -35,7 +37,11 @@ export const convertToExcelData = (items, instanceName) => {
                 value: item[column.field] !== null
                     ? (column.field === 'date' ? new Date(item[column.field]).toLocaleDateString() : item[column.field])
                     : '',
-                style: {alignment: {wrapText: true}, border: {bottom: {style: 'thin', color: {rgb: '000000'}}}, numFmt: "0.00"}
+                style: {
+                    alignment: {wrapText: true},
+                    border: {bottom: {style: 'thin', color: {rgb: '000000'}}},
+                    numFmt: "0.00"
+                }
             })
         })
         dataExcel.push(rowExcel)
@@ -49,7 +55,7 @@ export const convertToExcelData = (items, instanceName) => {
 
 export const countBalances = (parents, children, instanceName) => {
 
-    let itemsBalances = {}
+    let itemsBalances = []
     const columnName = `${instanceName}_id`
 
     parents.map(parent => {
