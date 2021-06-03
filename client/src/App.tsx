@@ -15,7 +15,7 @@ import Alert from "@material-ui/lab/Alert"
 import AllPayments from "./components/pages/AllPayments"
 import Loading from "./components/common/Loading"
 import {BillType, DealType, LimitType, MessageType, StateType, TDispatch} from "./types"
-import {Dispatch} from "redux";
+import store from "./redux/store";
 
 const ExportCss = React.lazy(() => import('./components/pages/ExportCss'))
 
@@ -35,7 +35,7 @@ type MapDispatchType = {
     closeMessage: () => void
 }
 
-const App: FC<MapStateType & MapDispatchType> = ({initApp, isInitialized, limits, deals, bills, message, closeMessage}) => {
+const App: FC<MapStateType & MapDispatchType> = ({initApp, isInitialized, message, closeMessage}) => {
     useEffect(() => {
         initApp()
     }, [])
@@ -46,8 +46,6 @@ const App: FC<MapStateType & MapDispatchType> = ({initApp, isInitialized, limits
 
 
     if (isInitialized) {
-        // @ts-ignore
-        // @ts-ignore
         return (
             <Fragment>
                 <Header/>

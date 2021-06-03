@@ -1,6 +1,8 @@
 import columnsVariants from "./config/columnVariants"
 import columnsExcelExport from "./config/columnsExcelExport"
 import moment from "moment"
+import classNames from "classnames";
+import {DEFAULT_CELL_CLASS} from "./constants";
 
 export const formatOutputData = values => {
     return {
@@ -97,7 +99,9 @@ export const createJsFormData = values => {
 }
 
 export const formatNumber = value => {
-    return new Intl.NumberFormat('ru-RU', {minimumFractionDigits: 2}).format(value.toFixed(2))
+    //toFixed(2) - недостаточен. Дело в том, что при -0.000..02 он возвращает -0.00
+    return new Intl.NumberFormat('ru-RU', {minimumFractionDigits: 2})
+        .format((Math.round(value * 100) / 100).toFixed(2))
 }
 
 export const getComparingObject = (obj, fields) => {
@@ -153,3 +157,5 @@ export const getComparedData = (convertibleArray, comparableArray) => {
 
     return resultConvertibleArray
 }
+
+export const getConcatClassWithDefault = (combineClass = '') => classNames(DEFAULT_CELL_CLASS, combineClass)

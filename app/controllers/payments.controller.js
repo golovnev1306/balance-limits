@@ -177,7 +177,7 @@ module.exports = {
         }
 
         try {
-            await Payment.bulkCreate(excelData)
+            await Payment.bulkCreate(excelData, {ignoreDuplicates: true})
             res.status(201).json({isSuccess: true})
         } catch (error) {
             res.status(400).json({messageBody: `Ошибка при запросе к бд: \n${error}`})

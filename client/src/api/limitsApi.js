@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const instance = axios.create({
-	baseURL: 'http://192.168.1.65:5001/api/limits'
+	baseURL: 'http://localhost:5001/api/limits'
 })
 
 const limitsApi = {

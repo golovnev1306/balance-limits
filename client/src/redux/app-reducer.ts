@@ -23,7 +23,7 @@ const initialState = {
     selectedPayment: null as Nullable<PaymentType>,
 
     pageSizes: {
-        limits: 10,
+        limits: 50,
         deals: 10,
         bills: 10,
         payments: 10,

@@ -20,12 +20,12 @@ const MaterialField = ({input, meta, itemsForSelectField, partners, allowNullPar
                         {allowNullParent && (<MenuItem value={-1}>Без привязки</MenuItem>)}
                         {itemsForSelectField.map(item => {
                             return item.name ?
-                                (<MenuItem value={item.id}>
+                                (<MenuItem value={item.id} key={item.id}>
                                     {item.name}<br/>
                                     КВР: {item.kvr} | КОСГУ: {item.kosgu} | КВФО: {item.kvfo}<br/>
                                     Отр.код: {item.ok}
                                 </MenuItem>)
-                                : (<MenuItem value={item.id}>
+                                : (<MenuItem value={item.id} key={item.id}>
                                     Номер: {item.number}<br/>
                                     Партнер: {item.partner}<br/>
                                     КВР: {item.kvr} | КОСГУ: {item.kosgu} | КВФО: {item.kvfo}<br/>

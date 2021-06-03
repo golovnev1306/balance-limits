@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {FC, ReactElement, useState} from 'react'
 import {makeStyles} from '@material-ui/core/styles'
 import Modal from '@material-ui/core/Modal'
 import Backdrop from '@material-ui/core/Backdrop'
@@ -6,7 +6,8 @@ import Fade from '@material-ui/core/Fade'
 import Button from "@material-ui/core/Button"
 import {connect} from "react-redux"
 import {getSelectedDealId, getSelectedLimitId} from "../../selectors"
-import initialValuesForms from "../../config/initialValuesForms";
+import initialValuesForms from "../../config/initialValuesForms"
+import {BillType, DealType, LimitType, PaymentType, StateType} from "../../types"
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -23,7 +24,21 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const TransitionsModal = ({instance, ChildrenForm, mode, selectedItem, title, modalTitlePostfix, selectedLimitId, selectedDealId, ...rest}) => {
+type OwnPropsType = {
+    instance: 'limits' | 'deals' | 'bills' | 'payments'
+    ChildrenForm: FC<any>//todo убрать any typescript'а
+    mode: 'update' | 'copy' | 'add'
+    selectedItem: LimitType | DealType | BillType | PaymentType
+    title: string
+    modalTitlePostfix: string
+}
+
+type MapStatePropsType = {
+    selectedLimitId: number | null
+    selectedDealId: number | null
+}
+
+const TransitionsModal: FC<OwnPropsType & MapStatePropsType> = ({instance, ChildrenForm, mode, selectedItem, title, modalTitlePostfix, selectedLimitId, selectedDealId, ...rest}) => {
     const classes = useStyles()
     const [open, setOpen] = useState(false)
 
@@ -36,24 +51,36 @@ const TransitionsModal = ({instance, ChildrenForm, mode, selectedItem, title, mo
     }
 
     let initialValues = {...initialValuesForms[instance]}
+    let resultInitialValues = {}
 
+    function hasOwnProperty<X extends {}, Y extends PropertyKey>
+    (obj: X, prop: Y): obj is X & Record<Y, unknown> {
+        return obj.hasOwnProperty(prop)
+    }
+    
     switch (mode) {
         case 'update':
-            initialValues = {
+            resultInitialValues = {
                 ...initialValues,
                 ...selectedItem,
-                deal_id: selectedItem.deal_id,
             }
+            if (hasOwnProperty(selectedItem, 'deal_id')) {
+                resultInitialValues = {
+                    ...resultInitialValues,
+                    deal_id: selectedItem.deal_id
+                }
+            }
+
             break
         case 'copy':
-            initialValues = {
+            resultInitialValues = {
                 ...initialValues,
                 ...selectedItem,
                 id: null,
             }
             break
         case 'add':
-            initialValues = {
+            resultInitialValues = {
                 ...initialValues,
                 limit_id: selectedLimitId ? selectedLimitId : -1,
                 deal_id: selectedDealId,
@@ -68,8 +95,6 @@ const TransitionsModal = ({instance, ChildrenForm, mode, selectedItem, title, mo
         <>
             <Button {...rest} variant={'outlined'} onClick={handleOpen}>{title}</Button>
             <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
                 className={classes.modal}
                 open={open}
                 onClose={handleClose}
@@ -81,9 +106,9 @@ const TransitionsModal = ({instance, ChildrenForm, mode, selectedItem, title, mo
             >
                 <Fade in={open}>
                     <div className={classes.paper}>
-                        <h2 id="transition-modal-title">{`${title} ${modalTitlePostfix}`}</h2>
-                        <p id="transition-modal-description">
-                            <ChildrenForm mode={mode} initialValues={initialValues}
+                        <h2>{`${title} ${modalTitlePostfix}`}</h2>
+                        <p>
+                            <ChildrenForm mode={mode} initialValues={resultInitialValues}
                                           handleClose={handleClose}/>
                         </p>
                     </div>
@@ -93,11 +118,11 @@ const TransitionsModal = ({instance, ChildrenForm, mode, selectedItem, title, mo
     )
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: StateType) => {
     return {
         selectedLimitId: getSelectedLimitId(state),
         selectedDealId: getSelectedDealId(state)
     }
 }
 
-export default connect(mapStateToProps)(TransitionsModal)
+export default connect<MapStatePropsType, {}, {}, StateType>(mapStateToProps)(TransitionsModal)

@@ -2,7 +2,7 @@ import {connect} from "react-redux"
 import {getFreeDeals} from "../../selectors"
 import React, {FC} from "react"
 import Deals from "../Deals"
-import {DealType, StateType} from "../../types";
+import {DealType, StateType} from "../../types"
 
 type MapStatePropsType = {
     deals: DealType[]

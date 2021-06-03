@@ -3,16 +3,16 @@ import {ThunkDispatch} from "redux-thunk"
 import {AnyAction} from "redux"
 
 export type BillType = Readonly<{
-    readonly date: string
-    readonly deal_id: number
-    readonly id: number
-    readonly kosgu: string
-    readonly kvfo: string
-    readonly kvr: string
-    readonly ok: string
-    readonly number: string
-    readonly partner: string
-    readonly available?: DealType
+    date: string
+    deal_id: number
+    id: number
+    kosgu: string
+    kvfo: string
+    kvr: string
+    ok: string
+    number: string
+    partner: string
+    available?: DealType
 }>
 
 export type DealType = Readonly<{
@@ -68,7 +68,8 @@ export type PageSizesType = Readonly<{
 }>
 
 export type SumsType = Readonly<{
-    balance: number
+    balanceByDeals: number
+    balanceByDealsWithBids: number
     balanceByPayments: number
     sum: number
 }>

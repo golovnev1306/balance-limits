@@ -61,7 +61,6 @@ const Deals: FC<MapStatePropsType & MapDispatchPropsType & OwnPropsType> = ({del
                      title={title}
                      modalTitlePostfix={'договор'}
                      handleDelete={handleDelete}
-                     isDeals
                      showModeDeals={showMode}
                      setShowModeDeals={setShowMode}
                      instance={'deals'}

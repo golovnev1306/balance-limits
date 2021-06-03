@@ -5,9 +5,9 @@ import {StateType} from "./types";
 export const getLimits = (state: StateType) => state.limits.limits
 export const getIsInitialized = (state: StateType) => state.app.isInitialized
 export const getSelectedLimit = (state: StateType) => state.app.selectedLimit
-export const getSelectedLimitId = (state: StateType) => state.app.selectedLimit?.id
+export const getSelectedLimitId = (state: StateType) => state.app.selectedLimit ? state.app.selectedLimit.id : state.app.selectedLimit
 export const getSelectedDeal = (state: StateType) => state.app.selectedDeal
-export const getSelectedDealId = (state: StateType) => state.app.selectedDeal?.id
+export const getSelectedDealId = (state: StateType) => state.app.selectedDeal ? state.app.selectedDeal.id : state.app.selectedDeal
 export const getSelectedBill = (state: StateType) => state.app.selectedBill
 export const getSelectedPayment = (state: StateType) => state.app.selectedPayment
 export const getDeals = (state: StateType) => state.deals.deals

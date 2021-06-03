@@ -1,4 +1,4 @@
-import Validators, { required, length} from "redux-form-validators";
+import Validators, { required, length} from "redux-form-validators"
 
 Object.assign(Validators.messages, {
     presence: {

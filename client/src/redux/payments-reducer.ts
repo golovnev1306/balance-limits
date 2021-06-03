@@ -6,7 +6,7 @@ import {
     formatOutputData
 } from "../helpers"
 import {MESSAGE_ERROR_UNIVERSAL, TYPE_MESSAGE_ERROR} from "../constants"
-import {PaymentType, ReturnActionsType, TDispatch} from "../types";
+import {PaymentType, ReturnActionsType, TDispatch} from "../types"
 
 const initialState = {
     payments: [] as PaymentType[]
@@ -62,6 +62,7 @@ export const addPaymentThunk = (values: any) => {
         try {
             const result = await paymentsApi.add(formatOutputData(values))
             if (result.status === 201) {
+
                 dispatch(actions.addPayment(formatInputData(result.data)))
                 dispatch(setMessage('Оплата добавлена'))
             }

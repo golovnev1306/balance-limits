@@ -7,13 +7,13 @@ import AlertDialogSlide from "./AlertDialogSlide"
 import {localizationDataGrid} from "../../config/dataGridLocalization"
 import Moment from "react-moment"
 import Summary from "../Summary"
-import {formatNumber} from "../../helpers"
+import {formatNumber, getConcatClassWithDefault} from "../../helpers"
 import {getPageSizes} from "../../selectors"
 import {connect} from "react-redux"
 import {setPageSizes} from "../../redux/app-reducer"
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import Grid from "@material-ui/core/Grid";
+import Select from "@material-ui/core/Select"
+import MenuItem from "@material-ui/core/MenuItem"
+import Grid from "@material-ui/core/Grid"
 
 
 const renderCell = params => {
@@ -40,7 +40,7 @@ const renderCell = params => {
 const CommonTable = ({
                          instance, title, selectedItem, setSelectedItem, tableName, data, ChildComponent, modalTitlePostfix,
                          handleDelete, ChildrenForm, resetPage, setResetPage, pageSizes, setPageSize,
-                         isCompareMode, isDeals, showModeDeals, setShowModeDeals
+                         isCompareMode, showModeDeals, setShowModeDeals
                      }) => {
 
     const memoizedColumns = useMemo(() => {
@@ -49,15 +49,17 @@ const CommonTable = ({
             column.renderCell = renderCell
             if (isCompareMode) {
                 column.cellClassName = ({row}) => {
-                    return Object.keys(row.found).length === 0 ? 'not-comparing' : 'comparing'
+                    return getConcatClassWithDefault(Object.keys(row.found).length === 0 ? 'not-comparing' : 'comparing')
                 }
             } else {
-                delete column.cellClassName
+                column.cellClassName = () => {
+                    return getConcatClassWithDefault()
+                }
             }
 
-            if (isDeals) {
+            if (instance === 'deals') {
                 column.cellClassName = ({row}) => {
-                    return row.is_bid ? 'is-bid' : ''
+                    return getConcatClassWithDefault(row.is_bid ? 'is-bid' : '')
                 }
             }
         })
@@ -95,17 +97,30 @@ const CommonTable = ({
 
 
     const countSummary = data => {
-        let sum = 0
-        let balance = 0
-        let balanceByPayments = 0
+        let sum = null
+        let balanceByDeals = null
+        let balanceByDealsWithBids = null
+        let balanceByPayments = null
         data.map(i => {
-            sum += i.summ
-            balance += i.balance
-            balanceByPayments += i.balanceByPayments
+            if (Number.isFinite(i.summ)) {
+                sum += i.summ
+            }
+
+            if (Number.isFinite(i.balance)) {
+                balanceByDeals += i.balance
+            }
+
+            if (Number.isFinite(i.balanceByBids)) {
+                balanceByDealsWithBids += i.balanceByBids
+            }
+
+            if (Number.isFinite(i.balanceByPayments)) {
+                balanceByPayments += i.balanceByPayments
+            }
         })
 
         setSums({
-            sum, balance, balanceByPayments
+            sum, balanceByDeals, balanceByDealsWithBids, balanceByPayments
         })
     }
 
@@ -183,7 +198,7 @@ const CommonTable = ({
                 columns={memoizedColumns}
                 rows={data}
                 localeText={localizationDataGrid}
-                showCellRightBorder
+                showCellRightBorder={true}
                 autoHeight
                 pageSize={pageSizes[tableName]}
                 page={page}
@@ -198,7 +213,10 @@ const CommonTable = ({
                         <MenuItem value="onlyDeals">Только договоры</MenuItem>
                         <MenuItem value="onlyBids">Только заявки</MenuItem>
                     </Select></Grid>}
-                <Grid item sm={instance === 'deals' ? 8 : 12} xs={12}><Summary sums={sums} isActual={isActual}/></Grid>
+                <Grid item sm={instance === 'deals' ? 8 : 12} xs={12}>
+                    {(Number.isFinite(sums.sum) || Number.isFinite(sums.balanceByDeals) || Number.isFinite(sums.balanceByDealsWithBids) || Number.isFinite(sums.balanceByPayments)) &&
+                        <Summary sums={sums} isActual={isActual}/>}
+                </Grid>
             </Grid>
 
 
