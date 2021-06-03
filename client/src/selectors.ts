@@ -1,6 +1,6 @@
-import {createSelector} from "reselect";
-import {countBalances, getComparedData, getComparingObject} from "./helpers";
-import {StateType} from "./types";
+import {createSelector} from "reselect"
+import {countBalances, getComparedData} from "./helpers"
+import {ComparedData, StateType} from "./types"
 
 export const getLimits = (state: StateType) => state.limits.limits
 export const getIsInitialized = (state: StateType) => state.app.isInitialized
@@ -60,22 +60,34 @@ export const getBillsByDeal = createSelector(getBills, getSelectedDealId, (bills
     return bills.filter(bill => bill.deal_id === dealId)
 })
 
-export const getBillsComparedWithPayments = createSelector(getBills, getPayments, (bills, payments) => {
+export const getComparedBillsData = createSelector(getBills, getPayments, (bills, payments): ComparedData[] => {
     return getComparedData(bills, payments)
 })
 
-export const getPaymentsComparedWithBills = createSelector(getPayments, getBills, (payments, bills) => {
+export const getComparedPaymentsData = createSelector(getBills, getPayments, (bills, payments): ComparedData[]  => {
     return getComparedData(payments, bills)
 })
 
-export const getProblemsBills = createSelector(getBillsComparedWithPayments, (bills) => {
+export const getBillsComparedWithPayments = createSelector(getBills, getComparedBillsData, (bills, comparedData) => {
     return bills.filter(bill => {
-        return Object.keys(bill.found).length === 0
+        return !!comparedData[bill.id].found
     })
 })
 
-export const getProblemsPayments = createSelector(getPaymentsComparedWithBills, (payments) => {
+export const getPaymentsComparedWithBills = createSelector(getPayments, getComparedPaymentsData, (payments, comparedData) => {
     return payments.filter(payment => {
-        return Object.keys(payment.found).length === 0
+        return !!comparedData[payment.id].found
+    })
+})
+
+export const getProblemsBills = createSelector(getBills, getComparedBillsData, (bills, comparedData) => {
+    return bills.filter(bill => {
+        return !comparedData[bill.id].found
+    })
+})
+
+export const getProblemsPayments = createSelector(getPayments, getComparedPaymentsData, (payments, comparedData) => {
+    return payments.filter(payment => {
+        return !comparedData[payment.id].found
     })
 })

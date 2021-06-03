@@ -40,16 +40,17 @@ const renderCell = params => {
 const CommonTable = ({
                          instance, title, selectedItem, setSelectedItem, tableName, data, ChildComponent, modalTitlePostfix,
                          handleDelete, ChildrenForm, resetPage, setResetPage, pageSizes, setPageSize,
-                         isCompareMode, showModeDeals, setShowModeDeals
+                         isCompareMode, showModeDeals, setShowModeDeals, comparedData
                      }) => {
 
     const memoizedColumns = useMemo(() => {
-        const columns = columnVariants[tableName]
+
+        const columns = [...columnVariants[tableName]]
         columns.map(column => {
             column.renderCell = renderCell
             if (isCompareMode) {
                 column.cellClassName = ({row}) => {
-                    return getConcatClassWithDefault(Object.keys(row.found).length === 0 ? 'not-comparing' : 'comparing')
+                    return getConcatClassWithDefault(!comparedData[row.id].found ? 'not-comparing' : 'comparing')
                 }
             } else {
                 column.cellClassName = () => {
@@ -64,7 +65,7 @@ const CommonTable = ({
             }
         })
         return [...columns]
-    }, [isCompareMode])
+    }, [tableName, isCompareMode])
 
 
     const [sums, setSums] = useState({})
@@ -155,7 +156,7 @@ const CommonTable = ({
                 <TransitionsModal ChildrenForm={ChildrenForm}
                                   mode={'add'}
                                   selectedItem={selectedItem}
-                                  color="primary"
+                                  btnColor="primary"
                                   title={'Добавить'}
                                   modalTitlePostfix={modalTitlePostfix}
                                   instance={instance}
@@ -166,7 +167,7 @@ const CommonTable = ({
                                           mode={'copy'}
                                           selectedItem={selectedItem}
                                           style={{marginLeft: '10px'}}
-                                          color="primary"
+                                          btnColor="primary"
                                           title={'Скопировать'}
                                           modalTitlePostfix={modalTitlePostfix}
                                           instance={instance}

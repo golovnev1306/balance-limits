@@ -25,7 +25,6 @@ type MapDispatchPropsType = {
 }
 
 const Import: FC<InjectedFormProps & MapDispatchPropsType> = ({handleSubmit, importPayments, reset, invalid}) => {
-
     const submit = (values: any) => {
         importPayments(values)
         reset()
@@ -117,6 +116,7 @@ const FileInput = ({input, meta, ...rest}: any) => {
     )
 }
 
+//todo fix any type
 const CheckboxInput = ({input, label}: any) => {
 
     return (
@@ -142,6 +142,6 @@ const mapDispatchToProps = (dispatch: TDispatch) => {
 export default compose(reduxForm<{}, MapDispatchPropsType>({
     form: 'import',
     initialValues: {
-        withBind: true
+        importOverwrite: false
     }
 }), connect<{}, MapDispatchPropsType, {}, StateType>(null, mapDispatchToProps))(Import)

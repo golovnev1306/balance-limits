@@ -99,7 +99,6 @@ export const createJsFormData = values => {
 }
 
 export const formatNumber = value => {
-    //toFixed(2) - недостаточен. Дело в том, что при -0.000..02 он возвращает -0.00
     return new Intl.NumberFormat('ru-RU', {minimumFractionDigits: 2})
         .format((Math.round(value * 100) / 100).toFixed(2))
 }
@@ -117,28 +116,27 @@ export const getComparingObject = (obj, fields) => {
 export const getComparedData = (convertibleArray, comparableArray) => {
     const availableComparableArray = [...comparableArray]
     const comparingFields = ['ok', 'kosgu', 'kvfo', 'kvr', 'summ']
-    let resultConvertibleArray = [...convertibleArray]
-    resultConvertibleArray.map(convertibleItem => {
+    let resultConvertibleArray = []
+    convertibleArray.forEach(convertibleItem => {
         const comparingItem = getComparingObject(convertibleItem, comparingFields)
-
         const foundIndex = availableComparableArray.findIndex(comparableItem => {
             const comparingComparableItem = getComparingObject(comparableItem, comparingFields)
             return JSON.stringify(comparingItem) === JSON.stringify(comparingComparableItem)
         })
 
-        let found = {}
+        let found = null
 
         if (foundIndex !== -1) {
             found = Object.assign({}, availableComparableArray[foundIndex])
             delete availableComparableArray[foundIndex]
         }
 
-        return Object.assign(convertibleItem, {found})
+        resultConvertibleArray[convertibleItem.id] = {found}
     })
 
     const availableComparableById = {}
 
-    resultConvertibleArray.map(convertibleItem => {
+    convertibleArray.forEach(convertibleItem => {
         const comparingItem = getComparingObject(convertibleItem, ['ok', 'kosgu', 'kvfo', 'kvr'])
         availableComparableArray.map(comparableItem => {
             const comparingComparableItem = getComparingObject(comparableItem, ['ok', 'kosgu', 'kvfo', 'kvr'])
@@ -151,8 +149,10 @@ export const getComparedData = (convertibleArray, comparableArray) => {
         })
     })
 
-    resultConvertibleArray.map(convertibleItem => {
-        return Object.assign(convertibleItem, {available: availableComparableById[convertibleItem.id]})
+    convertibleArray.forEach(convertibleItem => {
+        Object.assign(resultConvertibleArray[convertibleItem.id], {available: availableComparableById[convertibleItem.id]
+                ? availableComparableById[convertibleItem.id]
+                : null})
     })
 
     return resultConvertibleArray

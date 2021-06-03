@@ -7,7 +7,7 @@ import {deletePaymentThunk} from "../redux/payments-reducer";
 import PaymentForm from "./common/forms/PaymentForm";
 import BillForm from "./common/forms/BillForm";
 import {deleteBillThunk} from "../redux/bills-reducer";
-import {BillType, Nullable, PaymentType, StateType, TDispatch} from "../types";
+import {BillType, ComparedData, Nullable, PaymentType, StateType, TDispatch} from "../types";
 
 
 type MapStatePropsType = {
@@ -28,11 +28,12 @@ type OwnPropsType = {
     resetPage?: boolean
     setResetPage?: (isReset: boolean) => void
     isCompareMode?: boolean
+    comparedData?: ComparedData[]
 }
 
 const PaymentsByLimit: FC<MapStatePropsType & MapDispatchPropsType & OwnPropsType> = ({deletePayment, deleteBill,
       setSelectedPayment, selectedPayment, selectedBill, setSelectedBill,
-      paymentsResult, title, resetPage, setResetPage, isCompareMode}) => {
+      paymentsResult, title, resetPage, setResetPage, isCompareMode, comparedData}) => {
 
     const handleDelete = () => {
         if (selectedPayment)
@@ -58,18 +59,21 @@ const PaymentsByLimit: FC<MapStatePropsType & MapDispatchPropsType & OwnPropsTyp
                      resetPage={resetPage}
                      setResetPage={setResetPage}
                      isCompareMode={isCompareMode}
+                     comparedData={comparedData}
         />
             {isCompareMode && selectedPayment?.id && (
                 <Fragment>
                 {/*@ts-ignore*/}
                 <CommonTable ChildrenForm={BillForm}
                              tableName={'bills'}
-                             data={selectedPayment.available ? selectedPayment.available : []}
+                             data={comparedData ? (comparedData[selectedPayment.id].available ? comparedData[selectedPayment.id].available : []) : []}
                              selectedItem={selectedBill}
                              title={'Свободные счета совпавшие по кодам'}
                              setSelectedItem={setSelectedBill}
                              modalTitlePostfix={'счет'}
                              handleDelete={handleDeleteBill}
+                             comparedData={comparedData}
+
                 /></Fragment>
             )}
         </Fragment>

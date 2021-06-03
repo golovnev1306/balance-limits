@@ -52,7 +52,6 @@ const CommonForm = ({mode, handleSubmit, addItem, updateItem, handleClose, prist
 
             return newValue
         }
-
         return value
     }
     return (

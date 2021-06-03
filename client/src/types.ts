@@ -12,7 +12,6 @@ export type BillType = Readonly<{
     ok: string
     number: string
     partner: string
-    available?: DealType
 }>
 
 export type DealType = Readonly<{
@@ -50,8 +49,13 @@ export type PaymentType = Readonly<{
     kvfo: string
     kvr: string
     ok: string
-    available?: BillType[]
 }>
+
+export type ComparedData = Readonly<{
+    found: PaymentType | BillType
+    available: PaymentType[] | BillType[]
+}>
+
 
 export type MessageTypeType = "success" | "error"
 

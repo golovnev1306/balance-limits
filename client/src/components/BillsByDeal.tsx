@@ -2,7 +2,7 @@ import {connect} from "react-redux"
 import React, {FC} from "react"
 import {getBillsByDeal} from "../selectors"
 import Bills from "./Bills"
-import {BillType, Nullable, PaymentType, StateType} from "../types";
+import {BillType, StateType} from "../types"
 
 type MapStatePropsType = {
     bills: BillType[]

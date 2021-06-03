@@ -6,7 +6,7 @@ import {deleteBillThunk} from "../redux/bills-reducer"
 import BillForm from "./common/forms/BillForm"
 import {setSelectedBill, setSelectedPayment} from "../redux/app-reducer"
 import {deletePaymentThunk} from "../redux/payments-reducer"
-import {BillType, Nullable, PaymentType, StateType, TDispatch} from "../types";
+import {BillType, ComparedData, Nullable, PaymentType, StateType, TDispatch} from "../types";
 import PaymentForm from "./common/forms/PaymentForm";
 
 type MapStatePropsType = {
@@ -27,13 +27,14 @@ type OwnPropsType = {
     resetPage?: boolean
     setResetPage?: (isReset: boolean) => void
     isCompareMode?: boolean
+    comparedData?: ComparedData[]
 }
 
 const Bills: FC<MapStatePropsType & MapDispatchPropsType & OwnPropsType> = ({deleteBill, deletePayment, selectedBill,
                                                                                 selectedPayment, setSelectedBill,
                                                                                 setSelectedPayment, billsResult,
                                                                                 title, resetPage, setResetPage,
-                                                                                isCompareMode}) => {
+                                                                                isCompareMode, comparedData}) => {
 
     const handleDeleteBill = () => {
         if (selectedBill)
@@ -59,13 +60,14 @@ const Bills: FC<MapStatePropsType & MapDispatchPropsType & OwnPropsType> = ({del
                          resetPage={resetPage}
                          setResetPage={setResetPage}
                          isCompareMode={isCompareMode}
+                         comparedData={comparedData}
             />
             {isCompareMode && selectedBill?.id && (
                 <Fragment>
                 {/*@ts-ignore*/}
                 <CommonTable ChildrenForm={PaymentForm}
                              tableName={'payments'}
-                             data={selectedBill.available ? selectedBill.available : []}
+                             data={comparedData ? (comparedData[selectedBill.id].available ? comparedData[selectedBill.id].available : []) : []}
                              title={'Cвободная оплата, совпавшая по кодам'}
                              modalTitlePostfix={'оплату'}
                              handleDelete={handleDeletePayment}

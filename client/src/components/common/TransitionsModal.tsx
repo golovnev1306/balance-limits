@@ -1,4 +1,4 @@
-import React, {FC, ReactElement, useState} from 'react'
+import React, {CSSProperties, FC, Fragment, ReactElement, useState} from 'react'
 import {makeStyles} from '@material-ui/core/styles'
 import Modal from '@material-ui/core/Modal'
 import Backdrop from '@material-ui/core/Backdrop'
@@ -8,6 +8,7 @@ import {connect} from "react-redux"
 import {getSelectedDealId, getSelectedLimitId} from "../../selectors"
 import initialValuesForms from "../../config/initialValuesForms"
 import {BillType, DealType, LimitType, PaymentType, StateType} from "../../types"
+import {PropTypes} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -31,6 +32,8 @@ type OwnPropsType = {
     selectedItem: LimitType | DealType | BillType | PaymentType
     title: string
     modalTitlePostfix: string
+    btnColor?: PropTypes.Color
+    style: CSSProperties
 }
 
 type MapStatePropsType = {
@@ -38,7 +41,10 @@ type MapStatePropsType = {
     selectedDealId: number | null
 }
 
-const TransitionsModal: FC<OwnPropsType & MapStatePropsType> = ({instance, ChildrenForm, mode, selectedItem, title, modalTitlePostfix, selectedLimitId, selectedDealId, ...rest}) => {
+const TransitionsModal: FC<OwnPropsType & MapStatePropsType> = ({instance, ChildrenForm
+                                                                    , mode, selectedItem, title,
+                                                                    modalTitlePostfix, selectedLimitId, selectedDealId,
+                                                                    btnColor, style}) => {
     const classes = useStyles()
     const [open, setOpen] = useState(false)
 
@@ -90,10 +96,9 @@ const TransitionsModal: FC<OwnPropsType & MapStatePropsType> = ({instance, Child
             initialValues = {}
     }
 
-
     return (
-        <>
-            <Button {...rest} variant={'outlined'} onClick={handleOpen}>{title}</Button>
+        <Fragment>
+            <Button style={style} color={btnColor} variant={'outlined'} onClick={handleOpen}>{title}</Button>
             <Modal
                 className={classes.modal}
                 open={open}
@@ -114,7 +119,7 @@ const TransitionsModal: FC<OwnPropsType & MapStatePropsType> = ({instance, Child
                     </div>
                 </Fade>
             </Modal>
-        </>
+        </Fragment>
     )
 }
 
