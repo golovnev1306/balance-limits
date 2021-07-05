@@ -1,23 +1,22 @@
 import React, {FC, Fragment, Suspense, useEffect} from 'react'
 import {connect} from 'react-redux'
 import './App.css'
-import Header from "./Header"
+import Header from './Header'
 import {getBills, getDealsWithBalances, getIsInitialized, getLimitsWithBalances, getMessage} from './selectors'
-import {initApp, setMessage, setSelectedBill, setSelectedDeal, setSelectedLimit} from "./redux/app-reducer"
-import {Switch, Route} from "react-router-dom"
-import Main from "./components/pages/Main"
-import FreeDeals from "./components/pages/FreeDeals"
-import AllDeals from "./components/pages/AllDeals"
-import AllBills from "./components/pages/AllBills"
-import Import from "./components/pages/Import"
-import Snackbar from "@material-ui/core/Snackbar"
-import Alert from "@material-ui/lab/Alert"
-import AllPayments from "./components/pages/AllPayments"
-import Loading from "./components/common/Loading"
-import {BillType, DealType, LimitType, MessageType, StateType, TDispatch} from "./types"
-import store from "./redux/store";
+import {initApp, setMessage, setSelectedBill, setSelectedDeal, setSelectedLimit} from './redux/app-reducer'
+import {Route, Switch} from 'react-router-dom'
+import Main from './components/pages/Main'
+import FreeDeals from './components/pages/FreeDeals'
+import AllDeals from './components/pages/AllDeals'
+import AllBills from './components/pages/AllBills'
+import Import from './components/pages/Import'
+import Snackbar from '@material-ui/core/Snackbar'
+import Alert from '@material-ui/lab/Alert'
+import AllPayments from './components/pages/AllPayments'
+import Loading from './components/common/Loading'
+import {BillType, DealType, LimitType, MessageType, StateType, TDispatch} from './types'
 
-const ExportCss = React.lazy(() => import('./components/pages/ExportCss'))
+const ExportXls = React.lazy(() => import('./components/pages/ExportXls'))
 
 type MapStateType = {
     isInitialized: boolean
@@ -66,11 +65,10 @@ const App: FC<MapStateType & MapDispatchType> = ({initApp, isInitialized, messag
                             </Route>
                             <Route exact path="/export">
                                 <Suspense fallback={<Loading/>}>
-                                    <ExportCss/>
+                                    <ExportXls/>
                                 </Suspense>
                             </Route>
                             <Route exact path="/import">
-                                {/*@ts-ignore*/}
                                 <Import/>
                             </Route>
                             <Route exact path="/">
@@ -89,12 +87,13 @@ const App: FC<MapStateType & MapDispatchType> = ({initApp, isInitialized, messag
                 </Snackbar>
             </Fragment>)
     }
-    return (
 
-        <Loading/>
-
+    return (<Fragment>
+        {!!message.body
+        ? (<div className={'alert alert-warning'}>{message.body}</div>)
+        : (<Loading/>)}
+        </Fragment>
     )
-
 }
 
 const mapStateToProps = (state: StateType) => {

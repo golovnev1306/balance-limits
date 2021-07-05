@@ -149,7 +149,7 @@ module.exports = {
                 attributes: ['id', 'kvr', 'kosgu', 'kvfo', 'ok'],
                 raw: true
             })
-            excelData.map(rowData => { //todo сделать сравнение с помощью JSON вместо кучи условий
+            excelData.map(rowData => {
                 const limit = limits.find(limit => {
                     return (limit.kvr === rowData.kvr) &&
                         (limit.kosgu === rowData.kosgu) &&
@@ -164,6 +164,7 @@ module.exports = {
             res.status(400).json({messageBody: `Ошибка при запросе к бд: \n${error}`})
         }
 
+        console.log(importOverwrite)
 
         if (importOverwrite) {
             try {

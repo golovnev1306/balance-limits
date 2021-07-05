@@ -51,6 +51,7 @@ export const setPaymentsThunk = () => {
             }
         } catch (er) {
             dispatch(setMessage(er?.response?.data?.messageBody ? er.response.data.messageBody : MESSAGE_ERROR_UNIVERSAL, TYPE_MESSAGE_ERROR))
+            throw new Error
         }
 
 

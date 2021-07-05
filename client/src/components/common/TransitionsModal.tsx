@@ -7,7 +7,16 @@ import Button from "@material-ui/core/Button"
 import {connect} from "react-redux"
 import {getSelectedDealId, getSelectedLimitId} from "../../selectors"
 import initialValuesForms from "../../config/initialValuesForms"
-import {BillType, DealType, LimitType, PaymentType, StateType} from "../../types"
+import {
+    BillType,
+    DealType,
+    FormModeType, hasOwnProperty,
+    LimitType,
+    Nullable,
+    PaymentType,
+    StateType,
+    TablesNamesType
+} from '../../types'
 import {PropTypes} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -26,14 +35,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 type OwnPropsType = {
-    instance: 'limits' | 'deals' | 'bills' | 'payments'
+    instance?: TablesNamesType
     ChildrenForm: FC<any>//todo убрать any typescript'а
-    mode: 'update' | 'copy' | 'add'
-    selectedItem: LimitType | DealType | BillType | PaymentType
+    mode: FormModeType
+    selectedItem: Nullable<LimitType | DealType | BillType | PaymentType>
     title: string
     modalTitlePostfix: string
     btnColor?: PropTypes.Color
-    style: CSSProperties
+    style?: CSSProperties
 }
 
 type MapStatePropsType = {
@@ -56,13 +65,11 @@ const TransitionsModal: FC<OwnPropsType & MapStatePropsType> = ({instance, Child
         setOpen(false)
     }
 
-    let initialValues = {...initialValuesForms[instance]}
+
+    let initialValues = instance ? {...initialValuesForms[instance]} : {}
     let resultInitialValues = {}
 
-    function hasOwnProperty<X extends {}, Y extends PropertyKey>
-    (obj: X, prop: Y): obj is X & Record<Y, unknown> {
-        return obj.hasOwnProperty(prop)
-    }
+
     
     switch (mode) {
         case 'update':
@@ -70,7 +77,7 @@ const TransitionsModal: FC<OwnPropsType & MapStatePropsType> = ({instance, Child
                 ...initialValues,
                 ...selectedItem,
             }
-            if (hasOwnProperty(selectedItem, 'deal_id')) {
+            if (selectedItem && hasOwnProperty(selectedItem, 'deal_id')) {
                 resultInitialValues = {
                     ...resultInitialValues,
                     deal_id: selectedItem.deal_id

@@ -34,6 +34,10 @@ const Deal = sequelize.define('Deal', {
     is_bid: {
         type: DataTypes.BOOLEAN,
         allowNull: false
+    },
+    economy: {
+        type: DataTypes.DOUBLE,
+        allowNull: true
     }
 }, {tableName: 'deals', timestamps: false})
 

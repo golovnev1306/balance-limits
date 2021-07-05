@@ -6,7 +6,7 @@ import DealForm from "./common/forms/DealForm"
 import {deleteDealThunk} from "../redux/deals-reducer"
 import {setSelectedDeal} from "../redux/app-reducer"
 import BillsByDeal from "./BillsByDeal"
-import {DealType, Nullable, StateType, TDispatch} from "../types"
+import {DealType, Nullable, ShowModeType, StateType, TDispatch} from '../types'
 
 type MapStatePropsType = {
     selectedDeal: Nullable<DealType>,
@@ -31,8 +31,6 @@ const Deals: FC<MapStatePropsType & MapDispatchPropsType & OwnPropsType> = ({del
             deleteDeal(selectedDeal.id)
     }
 
-    type ShowModeType = 'all' | 'onlyDeals' | 'onlyBids'
-
     const [showMode, setShowMode] = useState<ShowModeType>('all')
     const [filteredDeals, setFilteredDeals] = useState<DealType[]>([])
 
@@ -44,12 +42,13 @@ const Deals: FC<MapStatePropsType & MapDispatchPropsType & OwnPropsType> = ({del
                 break
             case 'onlyDeals': setFilteredDeals(dealsResult.filter(deal => !deal.is_bid))
                 break
+            case 'dealsWithEconomy': setFilteredDeals(dealsResult.filter(deal => Number.isFinite(deal.economy)))
+                break
         }
     }, [dealsResult, showMode])
 
     return (
         <Fragment>
-        {/*@ts-ignore*/}
         <CommonTable resetPage={resetPage}
                      setResetPage={setResetPage}
                      ChildrenForm={DealForm}

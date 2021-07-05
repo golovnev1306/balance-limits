@@ -1,18 +1,20 @@
-import {setLimitsThunk} from "./limits-reducer"
-import {setDealsThunk} from "./deals-reducer"
-import {setBillsThunk} from "./bills-reducer"
-import {setPaymentsThunk} from "./payments-reducer"
-import {TYPE_MESSAGE_SUCCESS} from "../constants"
+import {setLimitsThunk} from './limits-reducer'
+import {checkIsExistFileWithMistakes, setDealsThunk} from './deals-reducer'
+import {setBillsThunk} from './bills-reducer'
+import {setPaymentsThunk} from './payments-reducer'
+import {TYPE_MESSAGE_SUCCESS} from '../constants'
 import {
     BillType,
     DealType,
     LimitType,
-    MessageType, MessageTypeType, Nullable,
+    MessageType,
+    MessageTypeType,
+    Nullable,
     PageSizesType,
     PaymentType,
     ReturnActionsType,
     TDispatch
-} from "../types"
+} from '../types'
 
 const initialState = {
     isInitialized: false,
@@ -120,11 +122,18 @@ const actions = {
 
 
 export const initApp = () => (async (dispatch: TDispatch) => {
-    await dispatch(setLimitsThunk())
-    await dispatch(setDealsThunk())
-    await dispatch(setBillsThunk())
-    await dispatch(setPaymentsThunk())
-    dispatch(actions.setInitialized(true))
+    try {
+        await dispatch(setLimitsThunk())
+        await dispatch(setDealsThunk())
+        await dispatch(setBillsThunk())
+        await dispatch(setPaymentsThunk())
+        await dispatch(checkIsExistFileWithMistakes())
+        dispatch(actions.setInitialized(true))
+    } catch(e) {
+        console.warn(e)
+        dispatch(actions.setInitialized(false))
+    }
+
 })
 
 export const {setMessage, setSelectedBill, clearAllSelected, setPageSizes, setSelectedDeal, setSelectedLimit, setSelectedPayment} = actions

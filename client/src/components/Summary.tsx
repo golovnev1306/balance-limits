@@ -1,7 +1,7 @@
-import React, {CSSProperties, FC} from "react"
+import React, {CSSProperties, FC, Fragment} from "react"
 import {formatNumber} from "../helpers"
 import Tooltip from "@material-ui/core/Tooltip"
-import {SumsType} from "../types"
+import {Nullable, SumsType} from '../types'
 
 type PropsType = {
     sums: SumsType
@@ -18,14 +18,29 @@ const Summary: FC<PropsType> = ({sums, isActual}) => {
         <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: '5px', color: '#333'}}>
             <Tooltip title={title}>
             <div style={style}>
-                {Number.isFinite(sums.sum) ? <div className={'summary__item-wrap'}><span className={'summary__item'}>Сумма:</span><span>{` ${formatNumber(sums.sum)}`}</span></div> : ''}
-                {Number.isFinite(sums.balanceByDeals) ? <div className={'summary__item-wrap'}><span className={'summary__item'}>Остаток:</span><span>{` ${formatNumber(sums.balanceByDeals)}`}</span></div> : ''}
-                {Number.isFinite(sums.balanceByDealsWithBids) ? <div className={'summary__item-wrap'}><span className={'summary__item'}>С учетом заявок:</span><span>{` ${formatNumber(sums.balanceByDealsWithBids)}`}</span></div> : ''}
-                {Number.isFinite(sums.balanceByPayments) ? <div className={'summary__item-wrap'}><span className={'summary__item'}>Остаток по оплате:</span><span>{` ${formatNumber(sums.balanceByPayments)}`}</span></div> : ''}
+                <SummaryItem value={sums.sum} title={'Сумма'}/>
+                <SummaryItem value={sums.balanceByDeals} title={'Остаток'}/>
+                <SummaryItem value={sums.balanceByDealsWithBids} title={'С учетом заявок'}/>
+                <SummaryItem value={sums.balanceByPayments} title={'Остаток по оплате'}/>
+                <SummaryItem value={sums.economy} title={'Экономия'}/>
             </div>
             </Tooltip>
         </div>
     )
+}
+
+type SummaryItemPropsType = {
+    value: Nullable<number>
+    title: string
+}
+
+const SummaryItem: FC<SummaryItemPropsType> = ({value, title}) => {
+    return <Fragment>
+        {value !== null ? <div className={'summary__item-wrap'}>
+            <span className={'summary__item'}>{title}:</span>
+            <span>{` ${formatNumber(value)}`}</span>
+        </div> : ''}
+    </Fragment>
 }
 
 export default Summary

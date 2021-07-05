@@ -1,10 +1,11 @@
-import columnsVariants from "./config/columnVariants"
-import columnsExcelExport from "./config/columnsExcelExport"
-import moment from "moment"
-import classNames from "classnames";
-import {DEFAULT_CELL_CLASS} from "./constants";
+import columnsVariants from './config/columnVariants'
+import columnsExcelExport from './config/columnsExcelExport'
+import moment from 'moment'
+import classNames from 'classnames'
+import {DEFAULT_CELL_CLASS} from './constants'
+import {TablesNamesType} from './types'
 
-export const formatOutputData = values => {
+export const formatOutputData = (values: any) => {
     return {
         ...values,
         summ: parseFloat((typeof values.summ === 'string')
@@ -14,7 +15,7 @@ export const formatOutputData = values => {
     }
 }
 
-export const formatInputData = (values, keys = []) => {
+export const formatInputData = (values: any, keys: string[] = []) => {
     let result = {...values}
     keys.map(key => {
         switch (key) {
@@ -30,13 +31,13 @@ export const formatInputData = (values, keys = []) => {
     return result
 }
 
-export const convertToExcelData = (items, instanceName) => {
-    let dataExcel = []
+export const convertToExcelData = (items: any[], instanceName: TablesNamesType) => {
+    let dataExcel: any[] = []
     items.map(item => {
-        let rowExcel = []
+        let rowExcel: any[] = []
 
         columnsVariants[instanceName].map(column => {
-            const style = {
+            const style: any = {
                 alignment: {wrapText: true},
                 border: {bottom: {style: 'thin', color: {rgb: '000000'}}},
                 numFmt: "0.00"
@@ -70,9 +71,9 @@ export const convertToExcelData = (items, instanceName) => {
     }]
 }
 
-export const countBalances = (parents, children, instanceName) => {
+export const countBalances = (parents: any[], children: any[], instanceName: string) => {
 
-    let itemsBalances = []
+    let itemsBalances: any[] = []
     const columnName = `${instanceName}_id`
 
     parents.map(parent => {
@@ -90,7 +91,7 @@ export const countBalances = (parents, children, instanceName) => {
     return itemsBalances
 }
 
-export const createJsFormData = values => {
+export const createJsFormData = (values: any) => {
     let formData = new FormData()
     for (let key in values) {
         formData.append(key, values[key])
@@ -98,13 +99,52 @@ export const createJsFormData = values => {
     return formData
 }
 
-export const formatNumber = value => {
-    return new Intl.NumberFormat('ru-RU', {minimumFractionDigits: 2})
-        .format((Math.round(value * 100) / 100).toFixed(2))
+export const formatNumber = (value: number) => {
+
+    return value !== null ? new Intl.NumberFormat('ru-RU', {minimumFractionDigits: 2})
+        // @ts-ignore
+        .format((Math.round(value * 100) / 100).toFixed(2)) : ''
 }
 
-export const getComparingObject = (obj, fields) => {
-    let resultObj = {}
+export const formatNumberHandler = (value: number, name: string) => {
+
+    if (name === 'summ' && value) {
+        let newValue = value.toString().replace(/[^0-9,.]/g, '')
+        newValue = newValue.replace(/\./g, ',')
+        const separators = [...newValue.matchAll(/,/g)]
+        if (separators?.[1]) {
+            newValue = newValue.slice(0, separators?.[1].index)
+        }
+
+        let firstNumber = separators[0] ? newValue.slice(0, separators[0].index) : newValue
+        firstNumber = firstNumber.replace(/\s/g, '')
+        if (firstNumber) {
+            firstNumber = new Intl.NumberFormat().format(parseInt(firstNumber))
+        }
+
+
+        let secondNumber = null
+        if (typeof separators[0]?.index !== 'undefined') {
+            secondNumber = newValue.slice(separators[0].index + 1)
+        }
+
+        newValue = `${firstNumber}`
+
+        if (secondNumber !== null) {
+            if (secondNumber.length > 2) {
+                secondNumber = secondNumber.slice(0, 2)
+            }
+
+            newValue = `${firstNumber},${secondNumber}`
+        }
+
+        return newValue
+    }
+    return value
+}
+
+export const getComparingObject = (obj: any, fields: string[]) => {
+    let resultObj: any = {}
 
     fields.map(field => {
         resultObj[field] = obj?.[field]
@@ -113,10 +153,10 @@ export const getComparingObject = (obj, fields) => {
     return resultObj
 }
 
-export const getComparedData = (convertibleArray, comparableArray) => {
+export const getComparedData = (convertibleArray: any[], comparableArray: any[]) => {
     const availableComparableArray = [...comparableArray]
     const comparingFields = ['ok', 'kosgu', 'kvfo', 'kvr', 'summ']
-    let resultConvertibleArray = []
+    let resultConvertibleArray: any[] = []
     convertibleArray.forEach(convertibleItem => {
         const comparingItem = getComparingObject(convertibleItem, comparingFields)
         const foundIndex = availableComparableArray.findIndex(comparableItem => {
@@ -134,7 +174,7 @@ export const getComparedData = (convertibleArray, comparableArray) => {
         resultConvertibleArray[convertibleItem.id] = {found}
     })
 
-    const availableComparableById = {}
+    const availableComparableById: any = {}
 
     convertibleArray.forEach(convertibleItem => {
         const comparingItem = getComparingObject(convertibleItem, ['ok', 'kosgu', 'kvfo', 'kvr'])

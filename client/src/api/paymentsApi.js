@@ -1,7 +1,8 @@
 import axios from 'axios'
+import {SERVER_URL} from '../constants'
 
 const instance = axios.create({
-	baseURL: 'http://localhost:5001/api/payments'
+	baseURL: `${SERVER_URL}/api/payments`
 })
 
 const paymentsApi = {

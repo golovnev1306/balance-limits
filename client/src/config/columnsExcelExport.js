@@ -21,6 +21,7 @@ const columnsExcelExport = {
         {title: 'Отраслевой код', width: {wch: 20}},
         {title: 'Сумма'},
         {title: 'Остаток'},
+        {title: 'Экономия'},
         {title: 'Является заявкой', width: {wch: 16}}
     ],
     'bills': [

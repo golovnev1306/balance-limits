@@ -1,4 +1,5 @@
-import Validators, { required, length} from "redux-form-validators"
+import Validators, {length, required} from 'redux-form-validators'
+import {FormsFieldsType} from '../types'
 
 Object.assign(Validators.messages, {
     presence: {
@@ -15,8 +16,11 @@ Object.assign(Validators.messages, {
     }
 })
 
-const formsFields = {
-    'limits': [
+
+
+
+const formsFields: FormsFieldsType = {
+    limits: [
         { name: 'name', autoFocus: true, label: 'Наименование', type: 'text', validate: [required()]},
         { name: 'kvr', label: 'КВР', type: 'text', validate: [required(), length({is: 3})]},
         { name: 'kosgu', label: 'КОСГУ', type: 'text', validate: [required(), length({is: 3})]},
@@ -25,7 +29,7 @@ const formsFields = {
         { name: 'summ', label: 'Сумма', type: 'text', validate: [required()]},
         { name: 'balance', label: 'Остаток по договорам', disabled: true, variant: 'filled', type: 'text'},
     ],
-    'deals': [
+    deals: [
         {name: 'limit_id', label: 'Лимит', type: 'select', validate: [required()]},
         {name: 'number', autoFocus: true, label: 'Номер', type: 'text', validate: [required(), length({max: 15})]},
         {name: 'date', label: 'Дата', type: 'date', InputLabelProps: { shrink: true }, validate: [required()]},
@@ -35,13 +39,13 @@ const formsFields = {
         {name: 'is_bid', label: 'Является заявкой', type: 'checkbox', validate: [required()]},
         {name: 'balance', label: 'Остаток', disabled: true, variant: 'filled', type: 'text'},
     ],
-    'bills': [
+    bills: [
         { name: 'deal_id', label: 'Договор', type: 'select', validate: [required()] },
         { name: 'number', autoFocus: true, label: 'Номер', type: 'text', validate: [required(), length({max: 45})] },
         { name: 'date', label: 'Дата', type: 'date', InputLabelProps: { shrink: true }, validate: [required()] },
         { name: 'summ', label: 'Сумма', type: 'text', validate: [required()]}
     ],
-    'payments': [
+    payments: [
         { name: 'limit_id', label: 'Лимит', type: 'select', validate: [required()] },
         { name: 'number', autoFocus: true, label: 'Номер', type: 'text', validate: [required(), length({max: 45})] },
         { name: 'purpose_of_payment', label: 'Назначение платежа', type: 'text', multiline: true},

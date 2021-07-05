@@ -9,7 +9,7 @@ const ExcelFile = ReactExport.ExcelFile
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet
 
 
-const ExportCss = ({limits, deals, bills, payments}) => {
+const ExportXls = ({limits, deals, bills, payments}) => {
     const [DataSet, setDataSet] = useState({})
 
     useEffect(() => {
@@ -41,4 +41,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps)(ExportCss)
+export default connect(mapStateToProps)(ExportXls)

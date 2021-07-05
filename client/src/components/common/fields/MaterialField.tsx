@@ -1,15 +1,28 @@
 import TextField from '@material-ui/core/TextField'
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
-import React from "react"
+import React, {FC} from 'react'
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import {Checkbox} from "@material-ui/core";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import {DecoratedFormProps, InjectedFormProps, WrappedFieldProps} from 'redux-form'
+import {AllItemsType, hasOwnProperty, LimitType} from '../../../types'
+import {AutocompleteRenderInputParams} from '@material-ui/lab/Autocomplete/Autocomplete'
 
-const MaterialField = ({input, meta, itemsForSelectField, partners, allowNullParent, ...rest}) => {
+type OwnPropsType = {
+    itemsForSelectField?: AllItemsType[]
+    partners: any
+    allowNullParent?: boolean
+    type: 'select' | 'number' | 'autocomplete' | 'checkbox'
+}
+
+type AllPropsType = WrappedFieldProps & OwnPropsType
+
+const MaterialField: FC<AllPropsType> = ({input, meta, itemsForSelectField, partners, allowNullParent, ...rest}) => {
+
 
     switch (rest.type) {
         case 'select':
@@ -18,8 +31,8 @@ const MaterialField = ({input, meta, itemsForSelectField, partners, allowNullPar
                     <InputLabel>Привязка</InputLabel>
                     <Select style={{textAlign: 'left'}} {...input} {...rest}>
                         {allowNullParent && (<MenuItem value={-1}>Без привязки</MenuItem>)}
-                        {itemsForSelectField.map(item => {
-                            return item.name ?
+                        {itemsForSelectField && itemsForSelectField.map((item) => {
+                            return hasOwnProperty(item, 'name') ?
                                 (<MenuItem value={item.id} key={item.id}>
                                     {item.name}<br/>
                                     КВР: {item.kvr} | КОСГУ: {item.kosgu} | КВФО: {item.kvfo}<br/>
@@ -47,7 +60,7 @@ const MaterialField = ({input, meta, itemsForSelectField, partners, allowNullPar
                     inputValue={input.value || ''}
                     style={{width: '100%'}}
                     options={partners}
-                    getOptionLabel={(option) => {
+                    getOptionLabel={(option: string) => {
                         return option
                     }}
                     disableClearable={true}

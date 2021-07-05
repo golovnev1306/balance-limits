@@ -1,26 +1,39 @@
-import {DataGrid} from "@material-ui/data-grid"
-import React, {useEffect, useMemo, useState} from "react"
-import columnVariants from "../../config/columnVariants"
-import Tooltip from "@material-ui/core/Tooltip"
-import TransitionsModal from "./TransitionsModal"
-import AlertDialogSlide from "./AlertDialogSlide"
-import {localizationDataGrid} from "../../config/dataGridLocalization"
-import Moment from "react-moment"
-import Summary from "../Summary"
-import {formatNumber, getConcatClassWithDefault} from "../../helpers"
-import {getPageSizes} from "../../selectors"
-import {connect} from "react-redux"
-import {setPageSizes} from "../../redux/app-reducer"
-import Select from "@material-ui/core/Select"
-import MenuItem from "@material-ui/core/MenuItem"
-import Grid from "@material-ui/core/Grid"
+import {DataGrid, GridCellClassNamePropType, GridCellClassParams, GridCellParams} from '@material-ui/data-grid'
+import React, {FC, useEffect, useMemo, useState} from 'react'
+import columnVariants from '../../config/columnVariants'
+import Tooltip from '@material-ui/core/Tooltip'
+import TransitionsModal from './TransitionsModal'
+import AlertDialogSlide from './AlertDialogSlide'
+import {localizationDataGrid} from '../../config/dataGridLocalization'
+import Moment from 'react-moment'
+import Summary from '../Summary'
+import {formatNumber, getConcatClassWithDefault} from '../../helpers'
+import {getPageSizes} from '../../selectors'
+import {connect} from 'react-redux'
+import {setPageSizes} from '../../redux/app-reducer'
+import Select from '@material-ui/core/Select'
+import Grid from '@material-ui/core/Grid'
+import MenuItem from '@material-ui/core/MenuItem'
+import {
+    AllFuncSetItemType,
+    AllItemsType,
+    BillType, ComparedData,
+    DealType,
+    LimitType, Nullable,
+    PageSizesType,
+    PaymentType,
+    ShowModeType,
+    StateType, SumsType,
+    TablesNamesType,
+    TDispatch
+} from '../../types'
 
 
-const renderCell = params => {
+const renderCell = (params: any) => {
     let value
     switch (params.colDef.type) {
         case 'date':
-            value = (<Moment format="DD.MM.YYYY">
+            value = (<Moment format='DD.MM.YYYY'>
                 {params.value}
             </Moment>)
             break
@@ -31,17 +44,48 @@ const renderCell = params => {
             value = params.value
     }
 
-    return (<Tooltip title={value} placement="bottom-start">
+    return (<Tooltip title={value} placement='bottom-start'>
         <span>{value}</span>
     </Tooltip>)
 }
 
 
-const CommonTable = ({
-                         instance, title, selectedItem, setSelectedItem, tableName, data, ChildComponent, modalTitlePostfix,
-                         handleDelete, ChildrenForm, resetPage, setResetPage, pageSizes, setPageSize,
-                         isCompareMode, showModeDeals, setShowModeDeals, comparedData
-                     }) => {
+type MapStatePropsType = {
+    pageSizes: PageSizesType
+}
+
+type MapDispatchPropsType = {
+    setPageSize: (pageSizeObj: PageSizesType) => void
+}
+
+type OwnPropsType = {
+    instance?: TablesNamesType
+    title: string
+    selectedItem: Nullable<AllItemsType>
+    setSelectedItem: AllFuncSetItemType
+    tableName: TablesNamesType
+    data: AllItemsType[]
+    ChildComponent?: FC<any>
+    modalTitlePostfix: string
+    handleDelete: () => void
+    ChildrenForm: FC<any>
+    resetPage?: boolean
+    setResetPage?: (resetPage: boolean) => void
+    pageSizes: PageSizesType
+    setPageSize: (pageSize: PageSizesType) => void
+    isCompareMode?: boolean
+    showModeDeals?: ShowModeType
+    setShowModeDeals?: (showMode: ShowModeType) => void
+    comparedData?: ComparedData[]
+}
+
+type AllPropsType = MapStatePropsType & MapDispatchPropsType & OwnPropsType
+
+const CommonTable: FC<AllPropsType> = ({
+                                           instance, title, selectedItem, setSelectedItem, tableName, data, ChildComponent, modalTitlePostfix,
+                                           handleDelete, ChildrenForm, resetPage, setResetPage, pageSizes, setPageSize,
+                                           isCompareMode, showModeDeals, setShowModeDeals, comparedData
+                                       }) => {
 
     const memoizedColumns = useMemo(() => {
 
@@ -50,7 +94,11 @@ const CommonTable = ({
             column.renderCell = renderCell
             if (isCompareMode) {
                 column.cellClassName = ({row}) => {
-                    return getConcatClassWithDefault(!comparedData[row.id].found ? 'not-comparing' : 'comparing')
+                    if (comparedData) {
+                        let arrayIndex = typeof row.id === 'string' ? Number.parseInt(row.id) : row.id
+                        return getConcatClassWithDefault(!comparedData[arrayIndex].found ? 'not-comparing' : 'comparing')
+                    }
+                    return getConcatClassWithDefault()
                 }
             } else {
                 column.cellClassName = () => {
@@ -59,7 +107,7 @@ const CommonTable = ({
             }
 
             if (instance === 'deals') {
-                column.cellClassName = ({row}) => {
+                column.cellClassName = ({row}: any) => {
                     return getConcatClassWithDefault(row.is_bid ? 'is-bid' : '')
                 }
             }
@@ -68,7 +116,7 @@ const CommonTable = ({
     }, [tableName, isCompareMode])
 
 
-    const [sums, setSums] = useState({})
+    const [sums, setSums] = useState({} as SumsType)
 
     // костылек, предупреждающий о том, что итоги могут не соответствовать действительности,
     // в случае, если стоит фильтрация и происходит изменение данных в этой таблицы.
@@ -85,7 +133,7 @@ const CommonTable = ({
     useEffect(() => {
         if (resetPage) {
             setPage(0)
-            setResetPage(false)
+            if (setResetPage) setResetPage(false)
         }
     }, [resetPage])
 
@@ -97,12 +145,14 @@ const CommonTable = ({
     }, [data])
 
 
-    const countSummary = data => {
-        let sum = null
-        let balanceByDeals = null
-        let balanceByDealsWithBids = null
-        let balanceByPayments = null
-        data.map(i => {
+    const countSummary = (data: any) => {
+        let sum = null as null | number
+        let balanceByDeals = null as null | number
+        let balanceByDealsWithBids = null as null | number
+        let balanceByPayments = null as null | number
+        let economy = null as null | number
+        data.map((i: any) => {
+            console.log(i)
             if (Number.isFinite(i.summ)) {
                 sum += i.summ
             }
@@ -118,27 +168,31 @@ const CommonTable = ({
             if (Number.isFinite(i.balanceByPayments)) {
                 balanceByPayments += i.balanceByPayments
             }
+
+            if (Number.isFinite(i.economy)) {
+                economy += i.economy
+            }
         })
 
         setSums({
-            sum, balanceByDeals, balanceByDealsWithBids, balanceByPayments
+            sum, balanceByDeals, balanceByDealsWithBids, balanceByPayments, economy
         })
     }
 
-    const pageChangeHandler = params => {
+    const pageChangeHandler = (params: any) => {
         setPage(params.page)
     }
 
-    const pageSizeChangeHandler = params => {
+    const pageSizeChangeHandler = (params: any) => {
         setPageSize({[tableName]: params.pageSize})
     }
 
-    const rowSelectedHandler = params => {
+    const rowSelectedHandler = (params: any) => {
         setSelectedItem(params.data)
         setResetPageChildTable(true)
     }
 
-    const filterModelChange = filterModel => {
+    const filterModelChange = (filterModel: any) => {
         if (!filterModel.filterModel.items[0].value) {
             setIsFiltering(false)
         } else {
@@ -156,7 +210,7 @@ const CommonTable = ({
                 <TransitionsModal ChildrenForm={ChildrenForm}
                                   mode={'add'}
                                   selectedItem={selectedItem}
-                                  btnColor="primary"
+                                  btnColor='primary'
                                   title={'Добавить'}
                                   modalTitlePostfix={modalTitlePostfix}
                                   instance={instance}
@@ -167,7 +221,7 @@ const CommonTable = ({
                                           mode={'copy'}
                                           selectedItem={selectedItem}
                                           style={{marginLeft: '10px'}}
-                                          btnColor="primary"
+                                          btnColor='primary'
                                           title={'Скопировать'}
                                           modalTitlePostfix={modalTitlePostfix}
                                           instance={instance}
@@ -180,13 +234,11 @@ const CommonTable = ({
                                           style={{marginLeft: '10px'}}
                                           title={'Изменить'}
                                           modalTitlePostfix={modalTitlePostfix}
-                                          withButton={true}
                                           instance={instance}
                         />
                     </>)}
                 {selectedItem?.id && (
-                    <AlertDialogSlide selectedItem={selectedItem} style={{marginLeft: '10px'}}
-                                      handleDelete={handleDelete}
+                    <AlertDialogSlide handleDelete={handleDelete}
                                       modalTitlePostfix={modalTitlePostfix}/>)}
             </div>
 
@@ -209,14 +261,19 @@ const CommonTable = ({
             />
             <Grid container>
                 {instance === 'deals' && <Grid item sm={4} xs={12}>
-                    <Select fullWidth onChange={value => {setShowModeDeals(value.target.value)}} value={showModeDeals}>
-                        <MenuItem value="all">Все</MenuItem>
-                        <MenuItem value="onlyDeals">Только договоры</MenuItem>
-                        <MenuItem value="onlyBids">Только заявки</MenuItem>
+                    <Select fullWidth
+                            onChange={(value: any) => {
+                                if (setShowModeDeals) setShowModeDeals(value.target.value)
+                            }}
+                            value={showModeDeals}>
+                        <MenuItem value='all'>Все</MenuItem>
+                        <MenuItem value='onlyDeals'>Только договоры</MenuItem>
+                        <MenuItem value='onlyBids'>Только заявки</MenuItem>
+                        <MenuItem value='dealsWithEconomy'>Только с экономией</MenuItem>
                     </Select></Grid>}
                 <Grid item sm={instance === 'deals' ? 8 : 12} xs={12}>
                     {(Number.isFinite(sums.sum) || Number.isFinite(sums.balanceByDeals) || Number.isFinite(sums.balanceByDealsWithBids) || Number.isFinite(sums.balanceByPayments)) &&
-                        <Summary sums={sums} isActual={isActual}/>}
+                    <Summary sums={sums} isActual={isActual}/>}
                 </Grid>
             </Grid>
 
@@ -229,16 +286,16 @@ const CommonTable = ({
     )
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: StateType): MapStatePropsType => {
     return {
         pageSizes: getPageSizes(state)
     }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: TDispatch): MapDispatchPropsType => {
     return {
-        setPageSize: pageSizeObj => dispatch(setPageSizes(pageSizeObj))
+        setPageSize: (pageSizeObj: PageSizesType) => dispatch(setPageSizes(pageSizeObj))
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CommonTable)
+export default connect<MapStatePropsType, MapDispatchPropsType, {}, StateType>(mapStateToProps, mapDispatchToProps)(CommonTable)

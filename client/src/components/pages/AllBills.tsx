@@ -1,10 +1,9 @@
-import {connect} from "react-redux"
-import {getBillsComparedWithPayments, getComparedBillsData, getProblemsBills} from "../../selectors"
-import React, {FC, Fragment, useState} from "react"
-import Bills from "../Bills"
-import Switch from "@material-ui/core/Switch"
-import {BillType, ComparedData, PaymentType, StateType} from "../../types";
-import {getComparedData} from "../../helpers";
+import {connect} from 'react-redux'
+import {getBillsComparedWithPayments, getComparedBillsData, getProblemsBills} from '../../selectors'
+import React, {FC, Fragment, useState} from 'react'
+import Bills from '../Bills'
+import Switch from '@material-ui/core/Switch'
+import {BillType, ComparedData, StateType} from '../../types'
 
 type MapStatePropsType = {
     bills: BillType[],
@@ -26,7 +25,10 @@ const AllDeals: FC<MapStatePropsType> = ({bills, problemsBills, billsComparedDat
 
     return (
         <Fragment>
-            <Bills comparedData={billsComparedData} billsResult={isOnlyProblems ? problemsBills : bills} title={'Все счета'} isCompareMode={isCompareMode}/>
+            <Bills comparedData={billsComparedData}
+                   billsResult={isOnlyProblems ? problemsBills : bills}
+                   title={'Все счета'}
+                   isCompareMode={isCompareMode}/>
             <Switch
                 color="primary"
                 checked={isCompareMode}

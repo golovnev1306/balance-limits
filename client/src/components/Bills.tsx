@@ -1,13 +1,13 @@
-import {connect} from "react-redux"
-import {getSelectedBill, getSelectedPayment} from "../selectors"
-import React, {FC, Fragment} from "react"
-import CommonTable from "./common/CommonTable"
-import {deleteBillThunk} from "../redux/bills-reducer"
-import BillForm from "./common/forms/BillForm"
-import {setSelectedBill, setSelectedPayment} from "../redux/app-reducer"
-import {deletePaymentThunk} from "../redux/payments-reducer"
-import {BillType, ComparedData, Nullable, PaymentType, StateType, TDispatch} from "../types";
-import PaymentForm from "./common/forms/PaymentForm";
+import {connect} from 'react-redux'
+import {getSelectedBill, getSelectedPayment} from '../selectors'
+import React, {FC, Fragment} from 'react'
+import CommonTable from './common/CommonTable'
+import {deleteBillThunk} from '../redux/bills-reducer'
+import BillForm from './common/forms/BillForm'
+import {setSelectedBill, setSelectedPayment} from '../redux/app-reducer'
+import {deletePaymentThunk} from '../redux/payments-reducer'
+import {BillType, ComparedData, Nullable, PaymentType, StateType, TDispatch} from '../types'
+import PaymentForm from './common/forms/PaymentForm'
 
 type MapStatePropsType = {
     selectedBill: Nullable<BillType>,
@@ -15,9 +15,9 @@ type MapStatePropsType = {
 }
 
 type MapDispatchPropsType = {
-    deleteBill: (billId: number) => void,
-    setSelectedBill: (selectedBill: BillType) => void,
-    deletePayment: (paymentId: number) => void,
+    deleteBill: (billId: number) => void
+    setSelectedBill: (selectedBill: BillType) => void
+    deletePayment: (paymentId: number) => void
     setSelectedPayment: (selectedPayment: PaymentType) => void
 }
 
@@ -30,25 +30,28 @@ type OwnPropsType = {
     comparedData?: ComparedData[]
 }
 
-const Bills: FC<MapStatePropsType & MapDispatchPropsType & OwnPropsType> = ({deleteBill, deletePayment, selectedBill,
-                                                                                selectedPayment, setSelectedBill,
-                                                                                setSelectedPayment, billsResult,
-                                                                                title, resetPage, setResetPage,
-                                                                                isCompareMode, comparedData}) => {
+type AllPropsType = MapStatePropsType & MapDispatchPropsType & OwnPropsType
+
+const Bills: FC<AllPropsType> = ({
+                                     deleteBill, deletePayment, selectedBill,
+                                     selectedPayment, setSelectedBill,
+                                     setSelectedPayment, billsResult,
+                                     title, resetPage, setResetPage,
+                                     isCompareMode, comparedData
+                                 }) => {
 
     const handleDeleteBill = () => {
         if (selectedBill)
-        deleteBill(selectedBill.id)
+            deleteBill(selectedBill.id)
     }
 
     const handleDeletePayment = () => {
         if (selectedPayment)
-        deletePayment(selectedPayment.id)
+            deletePayment(selectedPayment.id)
     }
 
     return (
         <Fragment>
-            {/*@ts-ignore*/}
             <CommonTable ChildrenForm={BillForm}
                          tableName={'bills'}
                          data={billsResult}
@@ -64,16 +67,15 @@ const Bills: FC<MapStatePropsType & MapDispatchPropsType & OwnPropsType> = ({del
             />
             {isCompareMode && selectedBill?.id && (
                 <Fragment>
-                {/*@ts-ignore*/}
-                <CommonTable ChildrenForm={PaymentForm}
-                             tableName={'payments'}
-                             data={comparedData ? (comparedData[selectedBill.id].available ? comparedData[selectedBill.id].available : []) : []}
-                             title={'Cвободная оплата, совпавшая по кодам'}
-                             modalTitlePostfix={'оплату'}
-                             handleDelete={handleDeletePayment}
-                             selectedItem={selectedPayment}
-                             setSelectedItem={setSelectedPayment}
-                />
+                    <CommonTable ChildrenForm={PaymentForm}
+                                 tableName={'payments'}
+                                 data={comparedData ? (comparedData[selectedBill.id].available ? comparedData[selectedBill.id].available : []) : []}
+                                 title={'Cвободная оплата, совпавшая по кодам'}
+                                 modalTitlePostfix={'оплату'}
+                                 handleDelete={handleDeletePayment}
+                                 selectedItem={selectedPayment}
+                                 setSelectedItem={setSelectedPayment}
+                    />
                 </Fragment>
             )}
         </Fragment>
@@ -88,12 +90,12 @@ const mapStateToProps = (state: StateType): MapStatePropsType => (
     })
 const mapDispatchToProps = (dispatch: TDispatch): MapDispatchPropsType => {
     return {
-        deleteBill: (billId: number) => dispatch(deleteBillThunk(billId)),
-        setSelectedBill: (selectedBill: BillType) => {
+        deleteBill: billId => dispatch(deleteBillThunk(billId)),
+        setSelectedBill: selectedBill => {
             dispatch(setSelectedBill(selectedBill))
         },
-        deletePayment: (paymentId: number) => dispatch(deletePaymentThunk(paymentId)),
-        setSelectedPayment: (selectedPayment: PaymentType) => {
+        deletePayment: paymentId => dispatch(deletePaymentThunk(paymentId)),
+        setSelectedPayment: selectedPayment => {
             dispatch(setSelectedPayment(selectedPayment))
         }
     }

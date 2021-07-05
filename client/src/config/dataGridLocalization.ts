@@ -1,4 +1,7 @@
-export const localizationDataGrid = {
+import {GridLocaleText} from '@material-ui/data-grid'
+
+export const localizationDataGrid: GridLocaleText = {
+  filterOperatorAfter: '',
   // Root
   rootGridLabel: 'Таблица',
   noRowsLabel: 'Нет строк',
@@ -70,14 +73,12 @@ export const localizationDataGrid = {
   columnHeaderSortIconLabel: 'Сортировать',
 
   // Rows selected footer text
-  footerRowSelected: (count, wd) =>
+  footerRowSelected: (count) =>
     count !== 1
       ? `${count.toLocaleString()} строк выбрано`
       : `${count.toLocaleString()} строка выбрана`,
 
   // Total rows footer text
-  footerTotalRows: 'Общее кол-во строк:',
+  footerTotalRows: 'Общее кол-во строк:'
 
-  // Pagination footer text
-  footerPaginationRowsPerPage: 'Строк на странице:',
-};
+}

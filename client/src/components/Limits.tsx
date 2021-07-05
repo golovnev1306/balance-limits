@@ -1,19 +1,20 @@
-import CommonTable from "./common/CommonTable"
-import LimitForm from "./common/forms/LimitForm"
-import React, {FC, useCallback, useMemo, useState} from "react"
+import CommonTable from './common/CommonTable'
+import LimitForm from './common/forms/LimitForm'
+import React, {FC, useCallback, useMemo, useState} from 'react'
 import {
     getLimitsWithBalances,
     getSelectedLimit
-} from "../selectors"
-import {setSelectedBill, setSelectedDeal, setSelectedLimit} from "../redux/app-reducer"
-import {setDealsThunk} from "../redux/deals-reducer"
-import {deleteLimitThunk} from "../redux/limits-reducer"
-import {connect} from "react-redux"
-import DealsByLimit from "./DealsByLimit"
-import Tabs from "@material-ui/core/Tabs"
-import Tab from "@material-ui/core/Tab"
-import PaymentsByLimit from "./PaymentsByLimit"
-import {BillType, DealType, LimitType, Nullable, StateType, TDispatch} from "../types";
+} from '../selectors'
+import {setSelectedBill, setSelectedDeal, setSelectedLimit} from '../redux/app-reducer'
+import {setDealsThunk} from '../redux/deals-reducer'
+import {deleteLimitThunk} from '../redux/limits-reducer'
+import {connect} from 'react-redux'
+import DealsByLimit from './DealsByLimit'
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
+import PaymentsByLimit from './PaymentsByLimit'
+import {BillType, DealType, LimitType, Nullable, StateType, TDispatch} from '../types';
+import { Fragment } from 'react'
 
 type MapStatePropsType = {
     selectedLimit: Nullable<LimitType>
@@ -33,7 +34,7 @@ const Limits: FC<MapStatePropsType & MapDispatchPropsType> = ({limitsResult, del
 
     const [selectedTab, setSelectedTab] = useState(0)
 
-    const TabPanel = useCallback(({ children, value, index, ...other }) => {
+    const TabPanel = useCallback(({children, value, index, ...other}) => {
 
         return (
             <div
@@ -54,18 +55,17 @@ const Limits: FC<MapStatePropsType & MapDispatchPropsType> = ({limitsResult, del
 
     const handleDelete = () => {
         if (selectedLimit)
-        deleteLimit(selectedLimit.id)
+            deleteLimit(selectedLimit.id)
     }
 
     return (
-        <>
+        <Fragment>
             <Tabs
                 centered={true}
                 onChange={handleChangeTab}
                 value={selectedTab}
                 indicatorColor="primary"
                 textColor="primary"
-                aria-label="disabled tabs example"
             >
                 <Tab label="Лимиты-договора-счета"/>
                 <Tab label="Лимиты-оплата"/>
@@ -85,7 +85,7 @@ const Limits: FC<MapStatePropsType & MapDispatchPropsType> = ({limitsResult, del
                          modalTitlePostfix={'лимит'}
                          handleDelete={handleDelete}
             />
-                </>)
+        </Fragment>)
 }
 
 const mapStateToProps = (state: StateType): MapStatePropsType => {

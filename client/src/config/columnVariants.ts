@@ -1,7 +1,15 @@
 import {DEFAULT_CELL_CLASS} from "../constants";
+import {GridColumns} from '@material-ui/data-grid'
 
-const columnVariants = {
-    'limits': [
+type ColumnVariantsType = {
+    limits: GridColumns
+    deals: GridColumns
+    bills: GridColumns
+    payments: GridColumns
+}
+
+const columnVariants: ColumnVariantsType = {
+    limits: [
         {field: 'name', headerName: 'Наименование', flex: 1, cellClassName: DEFAULT_CELL_CLASS},
         {field: 'kvr', headerName: 'КВР', width: 90, cellClassName: DEFAULT_CELL_CLASS},
         {field: 'kosgu', headerName: 'КОСГУ', width: 100, cellClassName: DEFAULT_CELL_CLASS},
@@ -30,7 +38,7 @@ const columnVariants = {
             width: 150
         },
     ],
-    'deals': [
+    deals: [
         {field: 'number', headerName: 'Номер', width: 130, cellClassName: DEFAULT_CELL_CLASS},
         {field: 'date', headerName: 'Дата', type: 'date', width: 110, cellClassName: DEFAULT_CELL_CLASS},
         {field: 'product', headerName: 'Продукт', flex: 1, cellClassName: DEFAULT_CELL_CLASS},
@@ -41,9 +49,10 @@ const columnVariants = {
         {field: 'ok', headerName: 'Отраслевой код', width: 180, cellClassName: DEFAULT_CELL_CLASS},
         {field: 'summ', headerName: 'Сумма', type: 'number', cellClassName: DEFAULT_CELL_CLASS, width: 150},
         {field: 'balance', headerName: 'Остаток', type: 'number', cellClassName: DEFAULT_CELL_CLASS, width: 150},
+        {field: 'economy', headerName: 'Экономия', type: 'number', cellClassName: DEFAULT_CELL_CLASS, width: 125},
         {field: 'is_bid', width: 0},
     ],
-    'bills': [
+    bills: [
         {field: 'number', headerName: 'Номер', width: 150, cellClassName: DEFAULT_CELL_CLASS},
         {field: 'partner', headerName: 'Партнер', flex: 1, cellClassName: DEFAULT_CELL_CLASS},
         {field: 'date', headerName: 'Дата', type: 'date', width: 130, cellClassName: DEFAULT_CELL_CLASS},
@@ -53,7 +62,7 @@ const columnVariants = {
         {field: 'ok', headerName: 'Отраслевой код', width: 200, cellClassName: DEFAULT_CELL_CLASS},
         {field: 'summ', headerName: 'Сумма', type: 'number', cellClassName: DEFAULT_CELL_CLASS, width: 150}
     ],
-    'payments': [
+    payments: [
         {field: 'number', headerName: 'Номер', width: 110, cellClassName: DEFAULT_CELL_CLASS},
         {field: 'partner', headerName: 'Партнер', width: 200, cellClassName: DEFAULT_CELL_CLASS},
         {field: 'date', headerName: 'Дата', type: 'date', width: 130, cellClassName: DEFAULT_CELL_CLASS},

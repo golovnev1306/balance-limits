@@ -1,6 +1,6 @@
-import {createSelector} from "reselect"
-import {countBalances, getComparedData} from "./helpers"
-import {ComparedData, StateType} from "./types"
+import {createSelector} from 'reselect'
+import {countBalances, getComparedData} from './helpers'
+import {ComparedData, StateType} from './types'
 
 export const getLimits = (state: StateType) => state.limits.limits
 export const getIsInitialized = (state: StateType) => state.app.isInitialized
@@ -16,6 +16,7 @@ export const getPayments = (state: StateType) => state.payments.payments
 export const getPartners = (state: StateType) => state.partners.partners
 export const getMessage = (state: StateType) => state.app.message
 export const getPageSizes = (state: StateType) => state.app.pageSizes
+export const getIsExistFileWithMistakesImportEconomy = (state: StateType) => state.deals.isExistFileWithImportMistakes
 
 
 export const getDealsWithBalances = createSelector(getDeals, getBills, (deals, bills) => {
