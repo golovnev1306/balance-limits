@@ -47,7 +47,6 @@ const PaymentsByLimit: FC<MapStatePropsType & MapDispatchPropsType & OwnPropsTyp
 
     return (
         <Fragment>
-            {/*@ts-ignore*/}
         <CommonTable ChildrenForm={PaymentForm}
                      setSelectedItem={setSelectedPayment}
                      selectedItem={selectedPayment}
@@ -63,7 +62,6 @@ const PaymentsByLimit: FC<MapStatePropsType & MapDispatchPropsType & OwnPropsTyp
         />
             {isCompareMode && selectedPayment?.id && (
                 <Fragment>
-                {/*@ts-ignore*/}
                 <CommonTable ChildrenForm={BillForm}
                              tableName={'bills'}
                              data={comparedData ? (comparedData[selectedPayment.id].available ? comparedData[selectedPayment.id].available : []) : []}

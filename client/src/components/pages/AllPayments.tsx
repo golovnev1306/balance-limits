@@ -1,9 +1,9 @@
-import {connect} from "react-redux";
-import {getComparedPaymentsData, getPaymentsComparedWithBills, getProblemsPayments} from "../../selectors";
-import React, {FC, Fragment, useState} from "react";
-import Payments from "../Payments";
-import Switch from "@material-ui/core/Switch";
-import {ComparedData, PaymentType, StateType} from "../../types";
+import {connect} from "react-redux"
+import {getComparedPaymentsData, getPayments, getProblemsPayments} from "../../selectors"
+import React, {FC, Fragment, useState} from "react"
+import Payments from "../Payments"
+import Switch from "@material-ui/core/Switch"
+import {ComparedData, PaymentType, StateType} from "../../types"
 
 type MapStatePropsType = {
     payments: PaymentType[]
@@ -46,7 +46,7 @@ const AllPayments: FC<MapStatePropsType> = ({payments, problemsPayments, compare
 }
 
 export default connect<MapStatePropsType, {}, {}, StateType>(state => ({
-    payments: getPaymentsComparedWithBills(state),
+    payments: getPayments(state),
     problemsPayments: getProblemsPayments(state),
     comparedPaymentsData: getComparedPaymentsData(state)
 }))(AllPayments)

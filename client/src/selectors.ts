@@ -28,10 +28,6 @@ export const getFreeDeals = createSelector(getDealsWithBalances, deals => {
     return deals.filter(deal => deal.limit_id === -1)
 })
 
-export const getOnlyBids = createSelector(getDealsWithBalances, deals => {
-    return deals.filter(deal => deal.is_bid)
-})
-
 export const getOnlyDeals = createSelector(getDealsWithBalances, deals => {
     return deals.filter(deal => !deal.is_bid)
 })
@@ -72,12 +68,6 @@ export const getComparedPaymentsData = createSelector(getBills, getPayments, (bi
 export const getBillsComparedWithPayments = createSelector(getBills, getComparedBillsData, (bills, comparedData) => {
     return bills.filter(bill => {
         return !!comparedData[bill.id].found
-    })
-})
-
-export const getPaymentsComparedWithBills = createSelector(getPayments, getComparedPaymentsData, (payments, comparedData) => {
-    return payments.filter(payment => {
-        return !!comparedData[payment.id].found
     })
 })
 
